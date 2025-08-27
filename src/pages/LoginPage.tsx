@@ -7,40 +7,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+
+import { useAppDispatch, useAppSelector } from '@/store/hook';
+import { loginThunk } from '@/store/thunks/authThunks';
 
 const LoginPage = () => {
-  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { error, isLoading } = useAppSelector(state => state.auth)
 
-  const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+  const dispatch = useAppDispatch();
 
-  const handleSubmit = async (e:FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
+    dispatch(loginThunk({ username, password }))
 
-    try {
-      const response = await axios.post(`${baseUrl}/auth/login`,
-        {username,password}
-      )
-      if(response.status !== 200)
-        setError("Invalid credentials")
-      
-
-      localStorage.setItem('token',response.data.token  )
-      setLoading(false);
-      navigate('/dashboard')
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      setError(error.message)
-      setLoading(false);
-    }
   };
 
   return (
@@ -58,7 +40,7 @@ const LoginPage = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Title */}
             <div>
               <CardTitle className="text-3xl font-bold text-white mb-2">
@@ -127,9 +109,9 @@ const LoginPage = () => {
                 type="submit"
                 onClick={handleSubmit}
                 className="w-full h-12 bg-teal-600 hover:bg-teal-700 text-white font-semibold transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
-                disabled={loading}
+                disabled={isLoading || false}
               >
-                {loading ? (
+                {isLoading ? (
                   <div className="flex items-center space-x-2">
                     <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
                     <span>Signing in...</span>

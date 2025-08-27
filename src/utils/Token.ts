@@ -31,3 +31,41 @@ export const getDecryptedToken = () => {
 
     }
 }
+
+export const cleanupExpiredToken = (): void => {
+    const storedToken = getDecryptedToken();
+    if (storedToken && isTokenExpired(storedToken)) {
+        removeStoredToken();
+    }
+};
+
+export const removeStoredToken = (): void => {
+    localStorage.removeItem('auth_token');
+};
+
+export const isTokenExpired = (token: string): boolean => {
+    try {
+
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Date.now() / 1000;
+        return payload.exp < currentTime;
+    } catch (error) {
+        console.error('Error parsing token:', error);
+        return true;
+    }
+};
+
+export const getUserDatafromToken = (token: string) => {
+    try {
+        const payload = JSON.parse(atob(token.split(".")[1]))
+        return {
+            id: payload.sub || payload.id,
+            name: payload.name,
+            username: payload.username,
+            role: payload.role
+        }
+    } catch (error) {
+        console.error('Error extracting user from token:', error);
+        return null;
+    }
+} 
