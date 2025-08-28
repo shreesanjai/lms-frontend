@@ -69,7 +69,7 @@ const DashboardLayout: React.FC = () => {
                     <div className="flex items-center space-x-2">
                         <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
                             LMS
-                        </h1>x
+                        </h1>
                     </div>
                     <Button
                         variant="ghost"

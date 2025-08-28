@@ -1,9 +1,9 @@
 import React from 'react';
 import { useAppSelector } from '@/store/hook';
 
-
 const Dashboard: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
+
 
   return (
     <div className="space-y-8">
@@ -14,7 +14,6 @@ const Dashboard: React.FC = () => {
         </h1>
 
       </div>
-
 
     </div>
   );

@@ -28,6 +28,14 @@ export interface UserData {
     reporting_manager_id: string;
 }
 
+interface leaveRequest {
+    startDate: Date | undefined;
+    endDate: Date | undefined;
+    no_of_days: number;
+    policy_id: number;
+    notes: string
+}
+
 
 const apiClient = axios.create({
     baseURL: BASE_URL,
@@ -84,4 +92,29 @@ export const getUserProfile = async () => {
 export const addUser = async (userData: UserData) => {
     const response = await apiClient.post('/user', userData)
     return response.data
+}
+
+export const searchUser = async (searchTerm: string) => {
+    const response = await apiClient.get(`/user/search?q=${searchTerm}`)
+    return response.data
+}
+
+export const getworkingDays = async (startDate: string, endDate: string) => {
+    const response = await apiClient.get(`/leave-requests/workingDays?startDate=${startDate}&endDate=${endDate}`)
+    return response.data
+}
+
+export const getPolicyTypes = async () => {
+    const response = await apiClient.get(`/policy`)
+    return response.data
+}
+
+export const createLeaveRequest = async (data: leaveRequest) => {
+    const response = await apiClient.post(`/leave-requests`, data)
+    return response.data;
+}
+
+export const myPendingRequests = async () => {
+    const response = await apiClient.get(`/leave-requests/my_pending_requests`)
+    return response.data;
 }

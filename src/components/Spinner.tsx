@@ -12,7 +12,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     message = "Loading...",
     size = "medium",
     fullScreen = true,
-    color = "blue",
+    color = "teal",
 }) => {
     const sizeClasses = {
         small: "w-5 h-5 border-2",
