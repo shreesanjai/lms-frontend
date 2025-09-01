@@ -38,7 +38,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>{cancelText}</AlertDialogCancel>
-                    <AlertDialogAction onClick={onConfirm}>{confirmText}</AlertDialogAction>
+                    <AlertDialogAction className="bg-teal-800 dark:bg-teal-700 hover:bg-teal-800/80 hover:dark:bg-teal-700/80 " onClick={onConfirm}>{confirmText}</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

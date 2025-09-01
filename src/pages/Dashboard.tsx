@@ -59,7 +59,7 @@ const Dashboard: React.FC = () => {
       if (resp.success) {
         toast.success("Leave Request Approved");
         setSelectedRequest(null);
-        fetchPeerPendingRequests();
+        await fetchPeerPendingRequests();
       }
     } catch (error: any) {
       toast.error(error.message);
@@ -74,7 +74,7 @@ const Dashboard: React.FC = () => {
       if (resp.success) {
         toast.success("Leave Request Rejected");
         setSelectedRequest(null);
-        fetchPeerPendingRequests();
+        await fetchPeerPendingRequests();
       }
     } catch (error: any) {
       toast.error(error.message);
@@ -136,9 +136,9 @@ const Dashboard: React.FC = () => {
       </div>
 
       <div className='w-5/6 rounded'>
-        <h3 className='font-bold text-2xl'>Pending Approval</h3>
         {
-          pendingApprovalRequests?.length > 0 && (
+          pendingApprovalRequests?.length > 0 && (<div>
+            <h3 className='font-bold text-2xl'>Pending Approval</h3>
             <div className='w-full dark:bg-neutral-900 shadow-sm rounded-xl'>
               {pendingApprovalRequests?.length > 0 ? (
                 <Card className="dark:bg-neutral-900 shadow-md">
@@ -226,6 +226,7 @@ const Dashboard: React.FC = () => {
                       Reject
                     </Button>
                     <Button
+                      className='bg-teal-800 dark:bg-teal-700 hover:bg-teal-800/80 hover:dark:bg-teal-700/80'
                       onClick={() => pendingRequestAction("approve")}
                     >
                       Approve
@@ -234,6 +235,7 @@ const Dashboard: React.FC = () => {
                 </DialogContent>
               </Dialog>
             </div>
+          </div>
           )
         }
       </div>

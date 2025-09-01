@@ -141,3 +141,8 @@ export const cancelRequest = async (id: string) => {
     const response = await apiClient.get(`/leave-requests/cancel?id=${id}`)
     return response.data
 }
+
+export const getAllHolidays = async (startDate: string, endDate: string) => {
+    const response = await apiClient.get(`/holiday?startDate=${startDate}&endDate=${endDate}`)
+    return response.data
+} 

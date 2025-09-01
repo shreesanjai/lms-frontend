@@ -83,7 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
             <nav className="mt-8 px-4">
                 <ul className="space-y-2">
                     {sidebarItems.map(renderSidebarItem)}
-                    {user?.department === 'ADMIN' && adminSidebarItems.map(renderSidebarItem)}
+                    {(user?.department === 'ADMIN' || user?.department === 'HR') && adminSidebarItems.map(renderSidebarItem)}
                 </ul>
             </nav>
         </div>

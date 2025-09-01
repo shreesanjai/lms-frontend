@@ -26,7 +26,8 @@ interface Response {
 interface PolicyType {
     id: string
     leavename: string
-    availability: string | null
+    availability: string | null,
+    applicationrule: string
 }
 
 const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
@@ -83,6 +84,7 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
                         }
                         return updated
                     })
+
                 } catch (error: any) {
                     toast.error(error.message)
                 }
@@ -110,6 +112,7 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
                         }
                         return updated
                     })
+
                 } catch (error: any) {
                     toast.error("Cannot fetch Floater leave on Selected days", error)
                 }
@@ -123,17 +126,42 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
                 return updated
             })
         }
+
+
+
+
     }, [startDate, endDate, leaveType, policyId, workingDays])
 
     useEffect(() => {
         setErrors(prev => {
             const updated = { ...prev }
-            if (updated.policyId?.startsWith("Only")) {
-                delete updated.policyId
+            delete updated.policyId
+            return updated
+        })
+
+        setErrors(prev => {
+            const updated = { ...prev }
+            const selectedType = leaveType.find(item => item.id === String(policyId))
+            const todayDate: Date = new Date();
+
+
+            if (workingDays > Number(selectedType?.availability))
+                updated.policyId = `Only ${selectedType?.availability} days available`
+
+            if (todayDate && startDate) {
+                console.log(todayDate, startDate, selectedType?.applicationrule);
+
+                const diffDays = Math.floor((todayDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+                console.log(diffDays);
+
+                if (selectedType?.applicationrule && diffDays > Number(selectedType?.applicationrule))
+                    updated.policyId = `Should be within ${selectedType?.applicationrule} days of the startDate`
             }
             return updated
         })
-    }, [policyId])
+
+
+    }, [leaveType, policyId, startDate, workingDays])
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()

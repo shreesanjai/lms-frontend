@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAppDispatch, useAppSelector } from '@/store/hook';
 import { logoutThunk } from '@/store/thunks/authThunks';
-import { ModeToggle } from '@/components/mode-toggle';
+import { ModeToggle } from '@/components/ui/mode-toggle';
 
 interface TopBarProps {
     setSidebarOpen: (open: boolean) => void;
