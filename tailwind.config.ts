@@ -7,7 +7,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ["Geist", "ui-sans-serif", "system-ui"], // 👈 default font
+                sans: ["Geist", "ui-sans-serif", "system-ui"],
             },
         },
     },

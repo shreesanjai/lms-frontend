@@ -1,10 +1,11 @@
-import { myPendingRequests } from "@/api/api";
+import { cancelRequest, myPendingRequests } from "@/api/api";
+import ConfirmDialog from "@/components/ConfirmDialog";
 import LeaveRequest from "@/components/LeaveRequest";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { format } from "date-fns";
-import { Badge } from "lucide-react";
 import { useEffect, useState } from "react"
 import { toast } from "sonner";
 
@@ -25,9 +26,33 @@ type LeaveRequest = {
 }
 
 
+type ConfirmDialogConfig = {
+    title: string;
+    description: string;
+    confirmText: string;
+    onConfirm: () => void;
+    onCancel: () => void;
+};
+
+type ConfirmDialogState = (ConfirmDialogConfig & { open: boolean }) | null;
+
+
+
 const LeavePage = () => {
 
     const [leaveRequestOpen, setLeaveRequestOpen] = useState(false);
+
+    const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>(null);
+
+    const showConfirmDialog = (config: ConfirmDialogConfig) => {
+        setConfirmDialog({
+            ...config,
+            open: true
+        });
+    };
+    const hideConfirmDialog = () => {
+        setConfirmDialog(null);
+    };
 
 
     const [pendingRequests, setPendingRequests] = useState<LeaveRequest[]>([]);
@@ -46,63 +71,110 @@ const LeavePage = () => {
         }
     }
 
-    useEffect(() => {
+    const cancelLeaveRequest = async (id: string) => {
 
-        getPendingRequests();
+        async function cancelRequestFunction() {
+            try {
+                const response = await cancelRequest(id);
+                if (response.success) {
+
+                    toast.success("Request cancelled")
+                    await getPendingRequests();
+                }
+
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } catch (error: any) {
+                toast.error(error.message)
+            }
+        }
+
+        showConfirmDialog({
+            title: "Cancel Request",
+            description: "Are you sure you want to cancel this request ?",
+            confirmText: "Cancel Request",
+            onConfirm: () => {
+                hideConfirmDialog();
+                cancelRequestFunction();
+            },
+            onCancel: hideConfirmDialog
+        })
+
+
+    }
+
+    useEffect(() => {
+        getPendingRequests()
     }, [])
 
     return (
         <div className="flex flex-col ">
             <div className="flex justify-between flex-row-reverse items-baseline py-5">
-                <Button onClick={() => setLeaveRequestOpen(true)} className="bg-teal-600 text-white hover:bg-teal-700 float-end ">Request Leave</Button>
+                <Button onClick={() => setLeaveRequestOpen(true)} className="bg-teal-600 hover:bg-teal-700 float-end ">Request Leave</Button>
 
                 <h2 className="text-xl font-semibold">My Pending Requests</h2>
             </div>
             <Card className="w-full">
                 <CardContent>
-                    <ScrollArea className="h-[400px] pr-3">
-                        <div className="space-y-3">
-                            {pendingRequests.map((req) => (
-                                <div
-                                    key={req.id}
-                                    className="border rounded-xl p-4 shadow-sm hover:shadow-md transition "
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="font-medium">{req.employee_name}</p>
-                                            <p className="text-sm ">@{req.employee_username}</p>
-                                        </div>
-                                        <Badge className="capitalize">
-                                            {req.leave_type}
-                                        </Badge>
-                                    </div>
+                    <ScrollArea className="h-[200px] pr-3">
 
-                                    <div className="mt-3 text-sm space-y-1">
-                                        <p>
-                                            <span className="font-semibold">From:</span>{" "}
-                                            {format(new Date(req.startdate), "dd MMM yyyy")}
-                                        </p>
-                                        <p>
-                                            <span className="font-semibold">To:</span>{" "}
-                                            {format(new Date(req.enddate), "dd MMM yyyy")}
-                                        </p>
-                                        <p>
-                                            <span className="font-semibold">Days:</span> {req.no_of_days}
-                                        </p>
-                                        <p>
-                                            <span className="font-semibold">Notes:</span> {req.notes}
-                                        </p>
-                                    </div>
+                        {pendingRequests.length > 0 ?
+                            (<div className="space-y-3">
+                                <TooltipProvider>
+                                    {pendingRequests.map((req) => (
+                                        <Tooltip key={req.id}>
+                                            <TooltipTrigger asChild>
+                                                <div
+                                                    className="border rounded-xl p-4 shadow-sm hover:shadow-md transition cursor-pointer"
+                                                >
+                                                    <div className="mt-3 text-sm space-y-1 flex flex-row justify-around">
+                                                        <p className="flex flex-col">
+                                                            <span className="font-medium text-gray-600 dark:text-gray-300 ">From</span>
+                                                            <span className="font-light text-xs">
+                                                                {format(new Date(req.startdate), "dd MMM yyyy")}
+                                                            </span>
+                                                        </p>
+                                                        <p className="flex flex-col">
+                                                            <span className="font-medium text-gray-600 dark:text-gray-300">To</span>
+                                                            <span className="font-light text-xs">
+                                                                {format(new Date(req.enddate), "dd MMM yyyy")}
+                                                            </span>
+                                                        </p>
+                                                        <p className="flex flex-col">
+                                                            <span className="font-medium text-gray-600 dark:text-gray-300">Leave Type</span>
+                                                            <span className="font-light text-xs">{req.leave_type}</span>
+                                                        </p>
+                                                        <p className="flex flex-col">
+                                                            <span className="font-medium text-gray-600 dark:text-gray-300">Days</span>
+                                                            <span className="font-light text-xs">{req.no_of_days}</span>
+                                                        </p>
+                                                        <Button onClick={() => cancelLeaveRequest(req.id)}>
+                                                            Cancel
+                                                        </Button>
+                                                    </div>
 
-                                    <div className="mt-3 border-t pt-2 text-xs text-gray-500">
-                                        Reporting Manager:{" "}
-                                        <span className="font-medium">
-                                            {req.manager_name} (@{req.manager_username})
-                                        </span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                                                    <div className="mt-3 border-t pt-2 text-xs text-gray-500">
+                                                        Approver:{" "}
+                                                        <span className="font-medium">{req.manager_name}</span>
+
+                                                    </div>
+                                                </div>
+                                            </TooltipTrigger>
+
+                                            <TooltipContent side="bottom" className="max-w-xs text-sm">
+                                                {req.notes || "No notes provided"}
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    ))}
+                                </TooltipProvider>
+                            </div>) :
+                            (<div
+                                className="w-full p-3"
+                            >
+                                <div className="font-semibold">No Pending Requests</div>
+
+
+                            </div>)}
+
                     </ScrollArea>
                 </CardContent>
             </Card>
@@ -122,6 +194,18 @@ const LeavePage = () => {
                     </div>
                 )
             }
+
+            {/* Confirmation Dialog */}
+            {confirmDialog && (
+                <ConfirmDialog
+                    title={confirmDialog.title}
+                    description={confirmDialog.description}
+                    open={confirmDialog.open}
+                    confirmText={confirmDialog.confirmText}
+                    onConfirm={confirmDialog.onConfirm}
+                    onCancel={confirmDialog.onCancel}
+                />
+            )}
 
         </div>
 

@@ -118,3 +118,26 @@ export const myPendingRequests = async () => {
     const response = await apiClient.get(`/leave-requests/my_pending_requests`)
     return response.data;
 }
+
+export const checkFloaterAvailable = async (startDate: string, endDate: string) => {
+    const response = await apiClient.get(`/leave-requests/isFloater?startDate=${startDate}&endDate=${endDate}`)
+    return response.data
+}
+
+export const getMyPeerPendingRequests = async () => {
+    const response = await apiClient.get(`/leave-requests/peer_approval`)
+    return response.data
+}
+
+export const approveRequest = async (id: string) => {
+    const response = await apiClient.get(`/leave-requests/approve?id=${id}`)
+    return response.data
+}
+export const rejectRequest = async (id: string) => {
+    const response = await apiClient.get(`/leave-requests/reject?id=${id}`)
+    return response.data
+}
+export const cancelRequest = async (id: string) => {
+    const response = await apiClient.get(`/leave-requests/cancel?id=${id}`)
+    return response.data
+}

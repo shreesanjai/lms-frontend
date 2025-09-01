@@ -62,7 +62,8 @@ export const getUserDatafromToken = (token: string) => {
             id: payload.sub || payload.id,
             name: payload.name,
             username: payload.username,
-            role: payload.role
+            role: payload.role,
+            department: payload.department
         }
     } catch (error) {
         console.error('Error extracting user from token:', error);

@@ -23,10 +23,8 @@ const searchUsers = async (searchTerm: string): Promise<user[]> => {
 
     try {
         const users: user[] = (await searchUser(searchTerm)).suggestions;
-        console.log(users);
 
         if (users.length <= 0) return []
-        // return [];
         return users.filter(user =>
             user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.username.toLowerCase().includes(searchTerm.toLowerCase())
@@ -96,15 +94,12 @@ const AddUser = ({ onClose }: AppUserProps) => {
         }, 300),
         []
     );
-
-    // Handle input change
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setInputValue(value);
         debouncedSearch(value);
     };
 
-    // Handle manager selection
     const handleManagerSelect = (manager: any) => {
         setInputValue(manager.name);
         setFormData(prev => ({ ...prev, reporting_manager_id: manager.id }));
@@ -112,35 +107,21 @@ const AddUser = ({ onClose }: AppUserProps) => {
         setSearchResults([]);
     };
 
-    // Generic form update handler
+
     const onValueUpdate = (key: keyof UserData, value: string) => {
         setFormData((prev) => ({ ...prev, [key]: value }))
     }
 
-    // Cleanup debounce on unmount
+
     useEffect(() => {
         return () => {
             debouncedSearch.cancel();
         };
     }, [debouncedSearch]);
 
-    // Close dropdown when clicking outside
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            const target = event.target as HTMLElement;
-            if (!target.closest('.manager-search-container')) {
-                setShowDropdown(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
 
     return (
-        <div className="border border-gray-700 bg-white dark:bg-gray-950 p-6 rounded-2xl">
+        <div className="border border-neutral-700 bg-white dark:bg-neutral-900 p-6 rounded-2xl">
             <h2 className="text-lg font-semibold mb-4">Add New User</h2>
 
             <form className="space-y-4" onSubmit={handleSubmit}>
@@ -220,15 +201,17 @@ const AddUser = ({ onClose }: AppUserProps) => {
                         )}
                     </div>
 
-                    {/* Search Results Dropdown */}
                     {showDropdown && searchResults.length > 0 && (
                         <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg max-h-60 overflow-y-auto">
                             {searchResults.map((manager) => (
                                 <button
                                     key={manager.id}
                                     type="button"
-                                    className="w-full px-3 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-800 focus:bg-gray-100 dark:focus:bg-gray-800 focus:outline-none"
-                                    onClick={() => handleManagerSelect(manager)}
+                                    className="w-full px-3 py-2 text-left hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:bg-neutral-100 dark:focus:bg-neutral-800 focus:outline-none"
+                                    onClick={() => {
+                                        handleManagerSelect(manager)
+                                        setShowDropdown(false)
+                                    }}
                                 >
                                     <div className="font-medium">{manager.name}</div>
                                     <div className="text-sm text-gray-500">@{manager.username}</div>
@@ -237,9 +220,8 @@ const AddUser = ({ onClose }: AppUserProps) => {
                         </div>
                     )}
 
-                    {/* No results message */}
                     {showDropdown && searchResults.length === 0 && !isSearching && inputValue.length >= 2 && (
-                        <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg p-3 text-gray-500 text-sm">
+                        <div className="absolute z-10 w-full mt-1 bg-white dark:bg-neutral-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg p-3 text-gray-500 text-sm">
                             No managers found
                         </div>
                     )}
@@ -253,10 +235,10 @@ const AddUser = ({ onClose }: AppUserProps) => {
                     >
                         Cancel
                     </Button>
-                    <Button type="submit">Save</Button>
+                    <Button type="submit" className="bg-teal-700 hover:bg-teal-800">Save</Button>
                 </div>
-            </form>
-        </div>
+            </form >
+        </div >
     );
 }
 

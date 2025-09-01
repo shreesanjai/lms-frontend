@@ -10,6 +10,7 @@ import LoginPage from './pages/LoginPage';
 import DashboardLayout from './pages/layout/DashboardLayout';
 import LeavePage from './pages/LeavePage';
 import { Toaster } from './components/ui/sonner';
+import HolidayPage from './pages/HolidayPage';
 
 
 const App = () => {
@@ -34,9 +35,16 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-        <Route path="/" element={<DashboardLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/leave" element={<LeavePage />} />
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route index element={<Dashboard />} />
+        </Route>
+
+        <Route path="/leave" element={<DashboardLayout />}>
+          <Route index element={<LeavePage />} />
+        </Route>
+
+        <Route path="/holiday" element={<DashboardLayout />}>
+          <Route index element={<HolidayPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
