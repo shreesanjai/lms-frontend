@@ -17,6 +17,7 @@ interface user {
     id: string;
     name: string;
     username: string;
+    department: string;
 }
 
 const searchUsers = async (searchTerm: string): Promise<user[]> => {
@@ -38,6 +39,7 @@ const searchUsers = async (searchTerm: string): Promise<user[]> => {
 
 const AddUser = ({ onClose }: AppUserProps) => {
     const [formData, setFormData] = useState<UserData>({
+        id: "",
         name: "",
         username: "",
         role: "",
@@ -102,7 +104,13 @@ const AddUser = ({ onClose }: AppUserProps) => {
 
     const handleManagerSelect = (manager: any) => {
         setInputValue(manager.name);
-        setFormData(prev => ({ ...prev, reporting_manager_id: manager.id }));
+        console.log(manager);
+
+        setFormData(prev => ({
+            ...prev,
+            reporting_manager_id: manager.id,
+            department: manager.department
+        }));
         setShowDropdown(false);
         setSearchResults([]);
     };
@@ -167,7 +175,7 @@ const AddUser = ({ onClose }: AppUserProps) => {
 
                 <div>
                     <Label className="mb-2">Department</Label>
-                    <Select onValueChange={(value) => onValueUpdate("department", value)}>
+                    <Select onValueChange={(value) => onValueUpdate("department", value)} value={formData.department}>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select a Department" />
                         </SelectTrigger>

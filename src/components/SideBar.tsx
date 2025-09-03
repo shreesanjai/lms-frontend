@@ -3,7 +3,6 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Calendar, TreePalm, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { useAppSelector } from '@/store/hook';
 
 interface SidebarProps {
     sidebarOpen: boolean;
@@ -20,10 +19,7 @@ const sidebarItems = [
         name: 'Leave',
         href: '/leave',
         icon: Calendar
-    }
-];
-
-const adminSidebarItems = [
+    },
     {
         name: 'Holiday',
         href: '/holiday',
@@ -31,9 +27,9 @@ const adminSidebarItems = [
     }
 ];
 
+
 const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
     const location = useLocation();
-    const { user } = useAppSelector((state) => state.auth);
 
     const renderSidebarItem = (item: typeof sidebarItems[0]) => {
         const Icon = item.icon;
@@ -83,7 +79,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
             <nav className="mt-8 px-4">
                 <ul className="space-y-2">
                     {sidebarItems.map(renderSidebarItem)}
-                    {(user?.department === 'ADMIN' || user?.department === 'HR') && adminSidebarItems.map(renderSidebarItem)}
                 </ul>
             </nav>
         </div>

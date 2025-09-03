@@ -20,6 +20,7 @@ export interface LoginResponse {
 }
 
 export interface UserData {
+    id: string | null
     name: string;
     username: string;
     role: string;
@@ -109,6 +110,11 @@ export const getPolicyTypes = async () => {
     return response.data
 }
 
+export const fetchLeaveHistory = async () => {
+    const response = await apiClient.get('/leave-requests');
+    return response.data
+}
+
 export const createLeaveRequest = async (data: leaveRequest) => {
     const response = await apiClient.post(`/leave-requests`, data)
     return response.data;
@@ -130,19 +136,35 @@ export const getMyPeerPendingRequests = async () => {
 }
 
 export const approveRequest = async (id: string) => {
-    const response = await apiClient.get(`/leave-requests/approve?id=${id}`)
+    const response = await apiClient.put(`/leave-requests/approve?id=${id}`)
     return response.data
 }
-export const rejectRequest = async (id: string) => {
-    const response = await apiClient.get(`/leave-requests/reject?id=${id}`)
+export const rejectRequest = async (id: string, rejectNotes: string) => {
+    const response = await apiClient.put(`/leave-requests/reject?id=${id}`, { data: rejectNotes })
     return response.data
 }
 export const cancelRequest = async (id: string) => {
-    const response = await apiClient.get(`/leave-requests/cancel?id=${id}`)
+    const response = await apiClient.put(`/leave-requests/cancel?id=${id}`)
     return response.data
 }
 
 export const getAllHolidays = async (startDate: string, endDate: string) => {
     const response = await apiClient.get(`/holiday?startDate=${startDate}&endDate=${endDate}`)
     return response.data
-} 
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const insertHolidayBulk = async (holidays: any) => {
+    const response = await apiClient.post(`/holiday`, holidays)
+    return response.data
+}
+
+export const getUserById = async (id: string) => {
+    const response = await apiClient.get(`/user?id=${id}`)
+    return response.data
+}
+
+export const updateUser = async (userData: UserData) => {
+    const response = await apiClient.put('/user', userData)
+    return response.data
+}

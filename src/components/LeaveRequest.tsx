@@ -41,6 +41,7 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
     const [leaveType, setLeaveType] = useState<PolicyType[]>([])
     const [notes, setNotes] = useState("")
     const [errors, setErrors] = useState<Record<string, string>>({})
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -190,6 +191,7 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
         }
 
         try {
+            setIsLoading(true);
             const resp = await createLeaveRequest({
                 startDate,
                 endDate,
@@ -200,10 +202,12 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
             if (resp.success) {
                 toast.success("Leave Request Applied")
             }
+            setIsLoading(false);
             onClose()
             refresh()
         } catch (error: any) {
             toast.error(error.message)
+            setIsLoading(false);
         }
     }
 
@@ -233,7 +237,7 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
                                     selected={startDate}
                                     captionLayout="dropdown"
                                     onSelect={(date) => {
-                                        setStartDate(date)
+                                        setStartDate(new Date(date?.toLocaleDateString("en-CA").split("T")[0] || new Date()))
                                         setStartOpen(false)
                                         setEndOpen(true)
                                     }}
@@ -261,7 +265,7 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
                                     selected={endDate}
                                     captionLayout="dropdown"
                                     onSelect={(date) => {
-                                        setEndDate(date)
+                                        setEndDate(new Date(date?.toLocaleDateString("en-CA").split("T")[0] || new Date()))
                                         setEndOpen(false)
                                     }}
                                 />
@@ -310,7 +314,7 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
                     {errors.notes && <p className="text-red-500 text-xs">{errors.notes}</p>}
                 </div>
 
-                <Button type="submit" className="bg-teal-600 hover:bg-teal-800">Apply</Button>
+                <Button type="submit" disabled={isLoading} className="bg-teal-600 hover:bg-teal-800">Apply</Button>
             </form>
         </div>
     )

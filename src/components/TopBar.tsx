@@ -1,6 +1,6 @@
 // components/TopBar.tsx
 import React from 'react';
-import { Menu, LogOut, UserPlus } from 'lucide-react';
+import { Menu, LogOut, UserPlus, UserRoundPen } from 'lucide-react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -18,9 +18,10 @@ import { ModeToggle } from '@/components/ui/mode-toggle';
 interface TopBarProps {
     setSidebarOpen: (open: boolean) => void;
     setAddUserOpen: (open: boolean) => void;
+    setUpdateUserOpen: (open: boolean) => void;
 }
 
-const TopBar: React.FC<TopBarProps> = ({ setSidebarOpen, setAddUserOpen }) => {
+const TopBar: React.FC<TopBarProps> = ({ setSidebarOpen, setAddUserOpen, setUpdateUserOpen }) => {
     const dispatch = useAppDispatch();
     const { user } = useAppSelector((state) => state.auth);
 
@@ -76,9 +77,13 @@ const TopBar: React.FC<TopBarProps> = ({ setSidebarOpen, setAddUserOpen }) => {
                             </DropdownMenuLabel>
 
                             {user?.department === "ADMIN" && (
-                                <DropdownMenuItem onClick={() => setAddUserOpen(true)}>
-                                    <UserPlus /> Add User
-                                </DropdownMenuItem>
+                                <div>
+                                    <DropdownMenuItem onClick={() => setAddUserOpen(true)}>
+                                        <UserPlus /> Add User
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setUpdateUserOpen(true)}>
+                                        <UserRoundPen /> Update User
+                                    </DropdownMenuItem></div>
                             )}
 
                             <DropdownMenuSeparator />

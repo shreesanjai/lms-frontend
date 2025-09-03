@@ -4,10 +4,12 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from '@/components/SideBar';
 import TopBar from '@/components/TopBar';
 import AddUser from '@/components/AddUser';
+import UpdateUser from '@/components/UpdateUser';
 
 const DashboardLayout: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [addUserOpen, setAddUserOpen] = useState(false);
+    const [updateUserOpen, setUpdateUserOpen] = useState(false);
 
 
     const sidebarToggle = useCallback((open: boolean) => {
@@ -18,12 +20,19 @@ const DashboardLayout: React.FC = () => {
         setAddUserOpen(open);
     }, []);
 
+    const updateUserToggle = useCallback((open: boolean) => {
+        setUpdateUserOpen(open);
+    }, []);
+
     const closeSidebar = useCallback(() => {
         setSidebarOpen(false);
     }, []);
 
     const closeAddUser = useCallback(() => {
         setAddUserOpen(false);
+    }, []);
+    const closeUpdateUser = useCallback(() => {
+        setUpdateUserOpen(false);
     }, []);
 
     return (
@@ -33,7 +42,7 @@ const DashboardLayout: React.FC = () => {
 
             <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
 
-                <TopBar setSidebarOpen={sidebarToggle} setAddUserOpen={addUserToggle} />
+                <TopBar setSidebarOpen={sidebarToggle} setAddUserOpen={addUserToggle} setUpdateUserOpen={updateUserToggle} />
 
                 <main className="flex-1 overflow-auto">
                     <div className="p-6">
@@ -51,6 +60,15 @@ const DashboardLayout: React.FC = () => {
                     <div className="absolute inset-0 bg-zinc-900/50 backdrop-blur-sm" onClick={closeAddUser} />
                     <div className="relative z-10 w-full max-w-lg">
                         <AddUser onClose={closeAddUser} />
+                    </div>
+                </div>
+            )}
+
+            {updateUserOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto">
+                    <div className="absolute inset-0 bg-zinc-900/50 backdrop-blur-sm" onClick={closeUpdateUser} />
+                    <div className="relative z-10 w-full max-w-lg">
+                        <UpdateUser onClose={closeUpdateUser} />
                     </div>
                 </div>
             )}

@@ -8,6 +8,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import LeaveHistory from '@/components/LeaveHistory';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 type pendingApprovalRequests = {
   id: string,
@@ -39,6 +42,9 @@ const Dashboard: React.FC = () => {
   const [pendingApprovalRequests, setPendingApprovalRequests] = useState<pendingApprovalRequests[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<pendingApprovalRequests | null>();
   const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [rejectNotes, setRejectNotes] = useState("");
+
 
   const showConfirmDialog = (config: ConfirmDialogConfig) => {
     setConfirmDialog({
@@ -55,30 +61,36 @@ const Dashboard: React.FC = () => {
     if (!selectedRequest) return;
 
     try {
+      setIsLoading(true)
       const resp = await approveRequest(selectedRequest.id);
       if (resp.success) {
         toast.success("Leave Request Approved");
         setSelectedRequest(null);
         await fetchPeerPendingRequests();
       }
+      setIsLoading(false);
     } catch (error: any) {
       toast.error(error.message);
+      setIsLoading(false);
     }
   };
 
   const handleReject = async () => {
     if (!selectedRequest) return;
-
+    setIsLoading(true);
     try {
-      const resp = await rejectRequest(selectedRequest.id);
+      const resp = await rejectRequest(selectedRequest.id, rejectNotes);
       if (resp.success) {
         toast.success("Leave Request Rejected");
         setSelectedRequest(null);
+        setRejectNotes("");
         await fetchPeerPendingRequests();
       }
     } catch (error: any) {
       toast.error(error.message);
+      setIsLoading(false);
     }
+
   };
 
   const pendingRequestAction = async (status: string) => {
@@ -125,7 +137,9 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     fetchPeerPendingRequests();
-  }, []);
+
+  }, [])
+
 
   return (
     <div className="space-y-8">
@@ -135,6 +149,7 @@ const Dashboard: React.FC = () => {
         </h1>
       </div>
 
+      {/* Pending Approval*/}
       <div className='w-5/6 rounded'>
         {
           pendingApprovalRequests?.length > 0 && (<div>
@@ -215,18 +230,24 @@ const Dashboard: React.FC = () => {
                         <span className="font-semibold">Notes:</span>{" "}
                         {selectedRequest.notes || "—"}
                       </p>
+                      <div className="flex flex-col gap-3">
+                        <Label>Notes</Label>
+                        <Textarea value={rejectNotes} onChange={(e) => setRejectNotes(e.target.value)} />
+                      </div>
                     </div>
                   )}
 
                   <DialogFooter className="flex justify-end gap-2">
                     <Button
                       variant="destructive"
+                      disabled={isLoading || (rejectNotes === "")}
                       onClick={() => pendingRequestAction("reject")}
                     >
                       Reject
                     </Button>
                     <Button
-                      className='bg-teal-800 dark:bg-teal-700 hover:bg-teal-800/80 hover:dark:bg-teal-700/80'
+                      className='bg-teal-800 dark:bg-teal-600 hover:bg-teal-800/80 hover:dark:bg-teal-600/80'
+                      disabled={isLoading}
                       onClick={() => pendingRequestAction("approve")}
                     >
                       Approve
@@ -238,6 +259,13 @@ const Dashboard: React.FC = () => {
           </div>
           )
         }
+      </div>
+
+
+      {/* Leave History */}
+      <div className='flex flex-col gap-3'>
+        <h3 className='text-xl font-bold'>Leave History</h3>
+        <LeaveHistory />
       </div>
 
       {/* Confirmation Dialog */}
