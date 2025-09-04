@@ -11,6 +11,7 @@ import ConfirmDialog from '@/components/ConfirmDialog';
 import LeaveHistory from '@/components/LeaveHistory';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import LeaveSummary from '@/components/LeaveSummary';
 
 type pendingApprovalRequests = {
   id: string,
@@ -259,6 +260,12 @@ const Dashboard: React.FC = () => {
           </div>
           )
         }
+      </div>
+
+
+      {/* Leave Summary */}
+      <div className=''>
+        <LeaveSummary />
       </div>
 
 

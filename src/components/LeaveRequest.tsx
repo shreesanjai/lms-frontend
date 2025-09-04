@@ -128,9 +128,6 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
             })
         }
 
-
-
-
     }, [startDate, endDate, leaveType, policyId, workingDays])
 
     useEffect(() => {
@@ -145,9 +142,10 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
             const selectedType = leaveType.find(item => item.id === String(policyId))
             const todayDate: Date = new Date();
 
-
-            if (workingDays > Number(selectedType?.availability))
+            // Fix: Only check availability if it's not null (not infinite)
+            if (selectedType?.availability !== null && workingDays > Number(selectedType?.availability)) {
                 updated.policyId = `Only ${selectedType?.availability} days available`
+            }
 
             if (todayDate && startDate) {
                 console.log(todayDate, startDate, selectedType?.applicationrule);
@@ -160,7 +158,6 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
             }
             return updated
         })
-
 
     }, [leaveType, policyId, startDate, workingDays])
 
@@ -181,7 +178,7 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
                     ? Infinity
                     : Number(selectedPolicy.availability)
             if (workingDays > available) {
-                newErrors.policyId = `Only ${available} days available`
+                newErrors.policyId = `Only ${available === Infinity ? 'unlimited' : available} days available`
             }
         }
 
@@ -246,8 +243,6 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
                         </Popover>
                         {errors.startDate && <p className="text-red-500 text-xs">{errors.startDate}</p>}
                     </div>
-
-
 
                     {/* End Date */}
                     <div className="flex flex-col gap-1 w-full">

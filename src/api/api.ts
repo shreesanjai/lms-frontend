@@ -120,6 +120,11 @@ export const createLeaveRequest = async (data: leaveRequest) => {
     return response.data;
 }
 
+export const leaveSummary = async () => {
+    const response = await apiClient.get('/leave-requests/summary')
+    return response.data
+}
+
 export const myPendingRequests = async () => {
     const response = await apiClient.get(`/leave-requests/my_pending_requests`)
     return response.data;

@@ -391,6 +391,7 @@ const HolidayPage = () => {
     // Load existing holidays when add holiday year changes
     useEffect(() => {
         loadExistingHolidaysForAddYear(addHolidayYear);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [addHolidayYear]);
 
     const years: number[] = Array.from({ length: 4 }, (_, i) => new Date().getFullYear() - 2 + i);
