@@ -80,7 +80,7 @@ const ChartPie = ({ data }: ChartPieProps) => {
                             <PieChart>
                                 <ChartTooltip
                                     cursor={false}
-                                    content={<ChartTooltipContent hideLabel />}
+                                    content={<ChartTooltipContent hideLabel={false} />}
                                 />
                                 <Pie
                                     data={chartData}

@@ -11,6 +11,7 @@ import DashboardLayout from './pages/layout/DashboardLayout';
 import LeavePage from './pages/LeavePage';
 import { Toaster } from './components/ui/sonner';
 import HolidayPage from './pages/HolidayPage';
+import TeamPage from './pages/TeamPage';
 
 
 const App = () => {
@@ -45,6 +46,10 @@ const App = () => {
 
         <Route path="/holiday" element={<DashboardLayout />}>
           <Route index element={<HolidayPage />} />
+        </Route>
+
+        <Route path="/team" element={<DashboardLayout />}>
+          <Route index element={<TeamPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

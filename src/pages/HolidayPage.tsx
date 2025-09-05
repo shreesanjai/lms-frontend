@@ -11,9 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAppSelector } from "@/store/hook";
+import debounce from "lodash.debounce";
 
 import { Plus, Trash2, Upload, ChevronDownIcon } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
 
@@ -56,7 +57,7 @@ const HolidayPage = () => {
 
     const { user } = useAppSelector(state => state.auth)
 
-    const initialHoliday: Holiday = {
+    const initialHoliday = useMemo(() => ({
         id: Date.now().toString(),
         date: null,
         is_floater: false,
@@ -65,14 +66,14 @@ const HolidayPage = () => {
         err: "",
         isPast: false,
         isExisting: false
-    };
+    }), []);
+
     const [newHolidays, setNewHolidays] = useState<Holiday[]>([initialHoliday]);
     const [updatedHoliday, setUpdatedHoliday] = useState<string[]>([]);
     const [deletedHoliday, setDeletedHoliday] = useState<Holiday[]>([initialHoliday]);
 
 
-    // Load existing holidays for the selected add holiday year
-    const loadExistingHolidaysForAddYear = async (year: number) => {
+    const loadExistingHolidaysForAddYear = useCallback(async (year: number) => {
         try {
             const startDate = new Date(`January 01,${year}`).toISOString().split("T")[0];
             const endDate = new Date(`December 31,${year}`).toISOString().split("T")[0];
@@ -87,18 +88,21 @@ const HolidayPage = () => {
                     isExisting: true
                 }));
 
-
                 const holidaysWithNewRow = [...existingHolidays, { ...initialHoliday, id: Date.now().toString() }];
                 setNewHolidays(holidaysWithNewRow);
             } else {
-
                 setNewHolidays([{ ...initialHoliday, id: Date.now().toString() }]);
             }
         } catch (error) {
             console.error("Error loading existing holidays:", error);
             setNewHolidays([{ ...initialHoliday, id: Date.now().toString() }]);
         }
-    };
+    }, [initialHoliday]);
+
+    const debouncedLoadHolidays = useMemo(
+        () => debounce(loadExistingHolidaysForAddYear, 300),
+        [loadExistingHolidaysForAddYear]
+    );
 
     const addHolidayRow = () => {
         setNewHolidays((prev) => [...prev, {
@@ -184,7 +188,7 @@ const HolidayPage = () => {
         for (const [, holidays] of map.entries()) {
             const first = holidays[0];
 
-            // ✅ require both description & floater to match
+            // âœ… require both description & floater to match
             const allSame = holidays.every(
                 (h) =>
                     h.description === first.description &&
@@ -192,10 +196,10 @@ const HolidayPage = () => {
             );
 
             if (allSame) {
-                // ✅ Keep only one copy
+                // âœ… Keep only one copy
                 result.push({ ...first, hasError: false, err: "" });
             } else {
-                // ❌ Conflicting duplicates -> mark all
+                // âŒ Conflicting duplicates -> mark all
                 for (const h of holidays) {
                     result.push({
                         ...h,
@@ -356,7 +360,7 @@ const HolidayPage = () => {
                     toast.success(`Deleted ${response.deleted} holidays`);
 
 
-                await loadExistingHolidaysForAddYear(addHolidayYear);
+                await debouncedLoadHolidays(addHolidayYear);
 
                 setUpdatedHoliday([]);
                 setDeletedHoliday([]);
@@ -391,8 +395,7 @@ const HolidayPage = () => {
     // Load existing holidays when add holiday year changes
     useEffect(() => {
         loadExistingHolidaysForAddYear(addHolidayYear);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [addHolidayYear]);
+    }, [addHolidayYear, loadExistingHolidaysForAddYear]);
 
     const years: number[] = Array.from({ length: 4 }, (_, i) => new Date().getFullYear() - 2 + i);
 

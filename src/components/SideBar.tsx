@@ -1,35 +1,49 @@
 // components/Sidebar.tsx
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Calendar, TreePalm, X } from 'lucide-react';
+import { Home, Calendar, TreePalm, X, Users } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import type { UserData } from '@/api/api';
 
 interface SidebarProps {
     sidebarOpen: boolean;
     setSidebarOpen: (open: boolean) => void;
+    hasTeam: boolean;
+    teamData?: UserData[];
 }
 
-const sidebarItems = [
-    {
-        name: 'Dashboard',
-        href: '/dashboard',
-        icon: Home
-    },
-    {
-        name: 'Leave',
-        href: '/leave',
-        icon: Calendar
-    },
-    {
-        name: 'Holiday',
-        href: '/holiday',
-        icon: TreePalm
-    }
-];
-
-
-const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
+const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, hasTeam }) => {
     const location = useLocation();
+
+    const sidebarItems = useMemo(() => {
+        const baseItems = [
+            {
+                name: 'Dashboard',
+                href: '/dashboard',
+                icon: Home
+            },
+            {
+                name: 'Leave',
+                href: '/leave',
+                icon: Calendar
+            },
+            {
+                name: 'Holiday',
+                href: '/holiday',
+                icon: TreePalm
+            }
+        ];
+
+        if (hasTeam) {
+            baseItems.push({
+                name: 'My Team',
+                href: '/team',
+                icon: Users
+            });
+        }
+
+        return baseItems;
+    }, [hasTeam]);
 
     const renderSidebarItem = (item: typeof sidebarItems[0]) => {
         const Icon = item.icon;

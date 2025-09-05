@@ -1,52 +1,75 @@
 // pages/layout/DashboardLayout.tsx
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '@/components/SideBar';
 import TopBar from '@/components/TopBar';
 import AddUser from '@/components/AddUser';
 import UpdateUser from '@/components/UpdateUser';
+import { getMyTeam } from '@/api/api';
 
 const DashboardLayout: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [addUserOpen, setAddUserOpen] = useState(false);
     const [updateUserOpen, setUpdateUserOpen] = useState(false);
+    const [teamData, setTeamData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
+    // Memoize hasTeam calculation
+    const hasTeam = useMemo(() => teamData.length > 0, [teamData.length]);
 
-    const sidebarToggle = useCallback((open: boolean) => {
-        setSidebarOpen(open);
+    // Fetch team data with proper error handling
+    const fetchTeamData = useCallback(async () => {
+        try {
+            setIsLoading(true);
+            const res = await getMyTeam();
+            setTeamData(res.data);
+        } catch (error) {
+            console.error('Error fetching team data:', error);
+            setTeamData([]);
+        } finally {
+            setIsLoading(false);
+        }
     }, []);
 
-    const addUserToggle = useCallback((open: boolean) => {
-        setAddUserOpen(open);
-    }, []);
+    useEffect(() => {
+        fetchTeamData();
+    }, [fetchTeamData]);
 
-    const updateUserToggle = useCallback((open: boolean) => {
-        setUpdateUserOpen(open);
-    }, []);
+    // Simplified toggle functions - no need for useCallback with simple state setters
+    const toggleSidebar = (open: boolean) => setSidebarOpen(open);
+    const toggleAddUser = (open: boolean) => setAddUserOpen(open);
+    const toggleUpdateUser = (open: boolean) => setUpdateUserOpen(open);
 
-    const closeSidebar = useCallback(() => {
-        setSidebarOpen(false);
-    }, []);
+    const closeSidebar = () => setSidebarOpen(false);
+    const closeAddUser = () => setAddUserOpen(false);
+    const closeUpdateUser = () => setUpdateUserOpen(false);
 
-    const closeAddUser = useCallback(() => {
-        setAddUserOpen(false);
-    }, []);
-    const closeUpdateUser = useCallback(() => {
-        setUpdateUserOpen(false);
-    }, []);
+    if (isLoading) {
+        return (
+            <div className="h-screen flex items-center justify-center">
+                <div className="text-lg">Loading...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="h-screen flex overflow-hidden dark:bg-neutral-950">
-
-            <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={sidebarToggle} />
+            <Sidebar
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={toggleSidebar}
+                hasTeam={hasTeam}
+            />
 
             <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
-
-                <TopBar setSidebarOpen={sidebarToggle} setAddUserOpen={addUserToggle} setUpdateUserOpen={updateUserToggle} />
+                <TopBar
+                    setSidebarOpen={toggleSidebar}
+                    setAddUserOpen={toggleAddUser}
+                    setUpdateUserOpen={toggleUpdateUser}
+                />
 
                 <main className="flex-1 overflow-auto">
                     <div className="p-6">
-                        <Outlet />
+                        <Outlet context={{ hasTeam, teamData }} />
                     </div>
                 </main>
             </div>

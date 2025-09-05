@@ -16,12 +16,12 @@ interface LeaveRequestProps {
     refresh: () => void
 }
 
-interface Response {
-    workingDays: number
-    weekends: number
-    holidays: number
-    totalDays: number
-}
+// interface Response {
+//     workingDays: number
+//     weekends: number
+//     holidays: number
+//     totalDays: number
+// }
 
 interface PolicyType {
     id: string
@@ -56,42 +56,32 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
     }, [])
 
     useEffect(() => {
-        if (startDate && endDate) {
-            if (new Date(startDate) > new Date(endDate)) {
-                setErrors(prev => ({ ...prev, endDate: "End Date must be after Start Date" }))
-                return
-            } else {
-                setErrors(prev => {
-                    const updated = { ...prev }
-                    delete updated.endDate
-                    return updated
-                })
-            }
+        if (!startDate || !endDate) return;
 
-            (async () => {
-                try {
-                    const resp: Response = (await getworkingDays(
-                        startDate.toLocaleDateString("en-CA"),
-                        endDate.toLocaleDateString("en-CA")
-                    )).data
-                    setWorkingDays(resp.workingDays)
-
-                    setErrors(prev => {
-                        const updated = { ...prev }
-                        if (resp.workingDays === 0) {
-                            updated.notes = "No working days in selected range"
-                        } else if (updated.notes === "No working days in selected range") {
-                            delete updated.notes
-                        }
-                        return updated
-                    })
-
-                } catch (error: any) {
-                    toast.error(error.message)
+        const fetchWorkingDaysAndValidate = async () => {
+            try {
+                // Validate date range
+                if (startDate > endDate) {
+                    setErrors(prev => ({ ...prev, endDate: "End Date must be after Start Date" }));
+                    return;
                 }
-            })()
-        }
-    }, [startDate, endDate])
+
+                // Fetch working days
+                const resp = await getworkingDays(
+                    startDate.toLocaleDateString("en-CA"),
+                    endDate.toLocaleDateString("en-CA")
+                );
+
+                setWorkingDays(resp.data.workingDays);
+
+
+            } catch (error: any) {
+                toast.error(error.message);
+            }
+        };
+
+        fetchWorkingDaysAndValidate();
+    }, [startDate, endDate]);
 
     useEffect(() => {
         const floaterType = leaveType.find(item => item.leavename === "Floater Leave")

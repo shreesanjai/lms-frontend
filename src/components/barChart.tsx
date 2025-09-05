@@ -56,8 +56,8 @@ const ChartBar = <T extends MonthlyStat | WeeklyStat>({ chartData, title }: Char
                                 tickLine={false}
                                 tickMargin={8}
                                 axisLine={false}
-                                angle={-45}
-                                textAnchor="end"
+
+
                                 height={60}
                                 interval={0}
                                 tickFormatter={(value: string | number) => {
@@ -69,7 +69,6 @@ const ChartBar = <T extends MonthlyStat | WeeklyStat>({ chartData, title }: Char
                                 cursor={{ fill: 'rgba(20, 184, 166, 0.1)' }}
                                 content={<ChartTooltipContent
                                     hideLabel={false}
-                                // labelFormatter={(label) => `${title.includes('Weekly') ? 'Day' : 'Month'}: ${label}`}
                                 />}
                             />
                             <Bar

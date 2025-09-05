@@ -25,7 +25,7 @@ export interface UserData {
     username: string;
     role: string;
     department: string;
-    password: string;
+    password: string | null;
     reporting_manager_id: string;
 }
 
@@ -110,8 +110,8 @@ export const getPolicyTypes = async () => {
     return response.data
 }
 
-export const fetchLeaveHistory = async () => {
-    const response = await apiClient.get('/leave-requests');
+export const fetchLeaveHistory = async (year: number) => {
+    const response = await apiClient.get(`/leave-requests?year=${year}`);
     return response.data
 }
 
@@ -120,8 +120,8 @@ export const createLeaveRequest = async (data: leaveRequest) => {
     return response.data;
 }
 
-export const leaveSummary = async () => {
-    const response = await apiClient.get('/leave-requests/summary')
+export const leaveSummary = async (year: number) => {
+    const response = await apiClient.get(`/leave-requests/summary?year=${year}`)
     return response.data
 }
 
@@ -172,4 +172,14 @@ export const getUserById = async (id: string) => {
 export const updateUser = async (userData: UserData) => {
     const response = await apiClient.put('/user', userData)
     return response.data
+}
+
+export const getMyTeam = async () => {
+    const response = await apiClient.get(`/user/myusers`)
+    return response.data
+}
+
+export const getMyTeamLeave = async (year: number | null) => {
+    const response = await apiClient.get(`/user/team-summary?year=${year}`)
+    return response.data;
 }

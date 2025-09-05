@@ -27,20 +27,22 @@ type LeaveHistoryData = {
     approver?: string;
     reject_cancel_reason?: string
 };
-
-const LeaveHistory = () => {
+interface LeaveHistoryProps {
+    year: number
+}
+const LeaveHistory = ({ year }: LeaveHistoryProps) => {
     const [leaveHistory, setLeaveHistory] = useState<LeaveHistoryData[]>([]);
 
     useEffect(() => {
         (async () => {
             try {
-                const resp = await fetchLeaveHistory();
+                const resp = await fetchLeaveHistory(year);
                 if (resp.success) setLeaveHistory(resp.data);
             } catch (error: any) {
                 toast.error(error.message);
             }
         })();
-    }, []);
+    }, [year]);
 
     return (
         <div className="w-full overflow-x-auto">

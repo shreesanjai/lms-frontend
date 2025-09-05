@@ -23,21 +23,25 @@ export type WeeklyStat = {
     consumed: string
 }
 
-const LeaveSummary = () => {
+interface LeaveSummaryProps {
+    year: number
+}
+
+const LeaveSummary = ({ year }: LeaveSummaryProps) => {
     const [summaryData, setSummaryData] = useState<PolicySummary[]>([]);
     const [monthlyStat, setMonthlyStat] = useState<MonthlyStat[]>([]);
     const [weeklyStat, setWeeklyStat] = useState<WeeklyStat[]>([]);
 
     useEffect(() => {
         (async () => {
-            const resp = await leaveSummary();
+            const resp = await leaveSummary(year);
             if (resp) {
                 setSummaryData(resp.summary);
                 setMonthlyStat(resp.monthStat)
                 setWeeklyStat(resp.weekstat)
             }
         })()
-    }, [])
+    }, [year])
 
     return (
         <div className="w-full p-4 space-y-6">
