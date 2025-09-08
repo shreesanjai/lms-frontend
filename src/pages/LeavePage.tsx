@@ -23,6 +23,7 @@ type LeaveRequest = {
     manager_name: string
     manager_username: string
     leave_type: string
+    hr_name: string
 }
 
 
@@ -43,6 +44,7 @@ const LeavePage = () => {
     const [leaveRequestOpen, setLeaveRequestOpen] = useState(false);
 
     const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>(null);
+
 
     const showConfirmDialog = (config: ConfirmDialogConfig) => {
         setConfirmDialog({
@@ -151,12 +153,15 @@ const LeavePage = () => {
                                                             Cancel
                                                         </Button>
                                                     </div>
+                                                    {req.status !== "partially_approved" ?
+                                                        (<div className="mt-3 border-t pt-2 text-xs text-gray-500">
+                                                            Approver:{" "}
+                                                            <span className="font-medium">{req.manager_name}</span>
 
-                                                    <div className="mt-3 border-t pt-2 text-xs text-gray-500">
-                                                        Approver:{" "}
-                                                        <span className="font-medium">{req.manager_name}</span>
+                                                        </div>) : (<div className="mt-3 border-t pt-2 text-xs text-gray-500">
+                                                            Approved By {req.manager_name}. Waiting For Confirmation from {req.hr_name} (HR) . . .
+                                                        </div>)}
 
-                                                    </div>
                                                 </div>
                                             </TooltipTrigger>
 

@@ -10,13 +10,14 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { getStatus, type LeaveStatusKey } from "@/utils/constants";
 
 type LeaveHistoryData = {
     id: string;
     employee_id: string;
     startdate: string;
     enddate: string;
-    status: string;
+    status: LeaveStatusKey;
     no_of_days: string;
     notes: string;
     policy_id: string;
@@ -24,8 +25,9 @@ type LeaveHistoryData = {
     created_at: Date | null;
     leavename: string;
     name: string;
-    approver?: string;
+    approver: string;
     reject_cancel_reason?: string
+    hr: string
 };
 interface LeaveHistoryProps {
     year: number
@@ -62,7 +64,7 @@ const LeaveHistory = ({ year }: LeaveHistoryProps) => {
                             Requested By
                         </TableHead>
                         <TableHead >
-                            Action Taken On
+                            Last Action Taken On
                         </TableHead>
                         <TableHead>
                             Leave Note
@@ -113,9 +115,9 @@ const LeaveHistory = ({ year }: LeaveHistoryProps) => {
 
                                     {/* Status */}
                                     <TableCell className="py-3">
-                                        <div className="font-semibold dark:text-white capitalize">{item.status}</div>
+                                        <div className="font-semibold dark:text-white capitalize">{getStatus(item.status).split(" ")[0]}</div>
                                         <div className="text-xs text-neutral-400">
-                                            {item.approver ? `by ${item.approver}` : ""}
+                                            {item.status === "approved" ? "by " + item.hr : item.status === "partially_approved" ? "by " + item.approver : ""}
                                         </div>
                                     </TableCell>
 

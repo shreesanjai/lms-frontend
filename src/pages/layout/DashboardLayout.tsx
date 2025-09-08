@@ -6,6 +6,7 @@ import TopBar from '@/components/TopBar';
 import AddUser from '@/components/AddUser';
 import UpdateUser from '@/components/UpdateUser';
 import { getMyTeam } from '@/api/api';
+import LoadingSpinner from '@/components/ui/Spinner';
 
 const DashboardLayout: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -22,7 +23,12 @@ const DashboardLayout: React.FC = () => {
         try {
             setIsLoading(true);
             const res = await getMyTeam();
-            setTeamData(res.data);
+            if (res.data.length <= 0)
+                setTeamData(res.hrData);
+            else
+                setTeamData(res.data);
+            console.log(res);
+
         } catch (error) {
             console.error('Error fetching team data:', error);
             setTeamData([]);
@@ -30,6 +36,10 @@ const DashboardLayout: React.FC = () => {
             setIsLoading(false);
         }
     }, []);
+
+    useEffect(() => {
+        console.log(teamData);
+    }, [teamData])
 
     useEffect(() => {
         fetchTeamData();
@@ -47,7 +57,7 @@ const DashboardLayout: React.FC = () => {
     if (isLoading) {
         return (
             <div className="h-screen flex items-center justify-center">
-                <div className="text-lg">Loading...</div>
+                <div className="text-lg"><LoadingSpinner /></div>
             </div>
         );
     }

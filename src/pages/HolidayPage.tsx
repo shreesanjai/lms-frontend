@@ -77,6 +77,7 @@ const HolidayPage = () => {
         try {
             const startDate = new Date(`January 01,${year}`).toISOString().split("T")[0];
             const endDate = new Date(`December 31,${year}`).toISOString().split("T")[0];
+
             const resp = await getAllHolidays(startDate, endDate);
 
             if (resp.success && resp.data.length > 0) {
@@ -253,7 +254,7 @@ const HolidayPage = () => {
                 }
 
                 importData(parsedData);
-                console.log('Imported dates in YYYY-MM-DD format:', parsedData.map(item => item.date));
+
             } catch (error) {
                 console.error("Error parsing file:", error);
                 alert("Error parsing file. Please check the format.");

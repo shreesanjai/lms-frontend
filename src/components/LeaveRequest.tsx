@@ -65,6 +65,9 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
                     setErrors(prev => ({ ...prev, endDate: "End Date must be after Start Date" }));
                     return;
                 }
+                else {
+                    setErrors(prev => ({ ...prev, endDate: "" }));
+                }
 
                 // Fetch working days
                 const resp = await getworkingDays(
@@ -138,10 +141,8 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
             }
 
             if (todayDate && startDate) {
-                console.log(todayDate, startDate, selectedType?.applicationrule);
 
                 const diffDays = Math.floor((todayDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-                console.log(diffDays);
 
                 if (selectedType?.applicationrule && diffDays > Number(selectedType?.applicationrule))
                     updated.policyId = `Should be within ${selectedType?.applicationrule} days of the startDate`

@@ -27,6 +27,7 @@ export interface UserData {
     department: string;
     password: string | null;
     reporting_manager_id: string;
+    hr_id: string
 }
 
 interface leaveRequest {

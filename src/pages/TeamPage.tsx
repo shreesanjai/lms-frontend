@@ -12,13 +12,16 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import BigCalenderView from '@/components/BigCalenderView';
 import moment from 'moment';
+import { useAppSelector } from '@/store/hook';
+import { ChevronDown } from 'lucide-react';
+import { getStatus, type LeaveStatusKey } from '@/utils/constants';
 
 type pendingApprovalRequests = {
     id: string,
     employee_id: string,
     startdate: Date | string;
     enddate: Date | string;
-    status: string;
+    status: LeaveStatusKey;
     no_of_days: number;
     notes: string;
     policy_id: number;
@@ -41,16 +44,15 @@ type teamLeaveSummary = {
     leave_id: string
     leavename: string
     no_of_days: string
-    startdate: string
+    startdate: string,
+    team: boolean
 }
-
-
 
 type ConfirmDialogState = (ConfirmDialogConfig & { open: boolean }) | null;
 
-
 const TeamPage = () => {
 
+    const department = useAppSelector(state => state.auth.user?.department)
 
     const [pendingApprovalRequests, setPendingApprovalRequests] = useState<pendingApprovalRequests[]>([]);
     const [teamLeaveSummary, setTeamLeaveSummary] = useState<teamLeaveSummary[]>([]);
@@ -58,8 +60,10 @@ const TeamPage = () => {
     const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [rejectNotes, setRejectNotes] = useState("");
+    const [showPeople, setShowPeople] = useState(true);
 
     const [myTeam, setMyTeam] = useState<UserData[]>([]);
+    const [myPeople, setMyPeople] = useState<UserData[]>([]);
 
 
     const showConfirmDialog = (config: ConfirmDialogConfig) => {
@@ -133,6 +137,7 @@ const TeamPage = () => {
             setMyTeam(teamResp.data);
             setPendingApprovalRequests(pendingResp.data);
             setTeamLeaveSummary(teamLeaveResp.data);
+            setMyPeople(teamResp.hrData)
 
         } catch (error: any) {
             toast.error(error.message);
@@ -175,7 +180,6 @@ const TeamPage = () => {
         }
     };
 
-
     return (
         <>
             {/* My Team */}
@@ -202,6 +206,52 @@ const TeamPage = () => {
 
                             </Card>
                         ))}
+                    </div>
+                </div>
+            )}
+
+            {department === "HR" && myPeople.length > 0 && (
+                <div className="flex flex-col gap-2 m-4">
+                    {/* Header with toggle */}
+                    <div
+                        className="flex items-center cursor-pointer"
+                        onClick={() => setShowPeople(prev => !prev)}
+                    >
+                        <ChevronDown
+                            className={`w-6 h-6 mr-3 transition-transform duration-300 ${showPeople ? "rotate-0" : "-rotate-90"
+                                }`}
+                        />
+                        <div className="font-bold text-4xl">People</div>
+                    </div>
+
+                    {/* Collapsible section */}
+                    <div
+                        className={`transition-all ease-in-out duration-500 overflow-hidden ${showPeople ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
+                            }`}
+                    >
+                        <div className="grid grid-cols-5 gap-4 m-5">
+                            {myPeople.map((item) => (
+                                <Card
+                                    key={item.id}
+                                    className="w-full hover:scale-105 ease-in-out transition-all"
+                                >
+                                    <CardHeader className="flex flex-col border-b dark:border-neutral-800 border-neutral-200">
+                                        <CardTitle>{item.name}</CardTitle>
+                                        <div className="text-muted-foreground text-sm">@{item.username}</div>
+                                    </CardHeader>
+                                    <CardContent className="flex flex-col gap-2">
+                                        <div>
+                                            <div className="font-black text-sm">Department</div>
+                                            <div className="text-sm text-muted-foreground">{item.department}</div>
+                                        </div>
+                                        <div>
+                                            <div className="font-black text-sm">Role</div>
+                                            <div className="text-sm text-muted-foreground">{item.role}</div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
                     </div>
                 </div>
             )}
@@ -280,7 +330,7 @@ const TeamPage = () => {
                                             </p>
                                             <p>
                                                 <span className="font-semibold">Status:</span>{" "}
-                                                {selectedRequest.status}
+                                                {getStatus(selectedRequest.status)}
                                             </p>
                                             <p>
                                                 <span className="font-semibold">Notes:</span>{" "}
@@ -321,11 +371,12 @@ const TeamPage = () => {
             <div>
                 <h3 className='ml-6 font-bold text-2xl mb-4'>Leave Sheet</h3>
                 <div className='m-10 h-[100vh]'>
-                    <BigCalenderView events={teamLeaveSummary.map(item => ({
+                    <BigCalenderView events={[...teamLeaveSummary.map(item => ({
                         start: moment(item.startdate).toDate(),
                         end: moment(item.enddate).add(1, 'day').toDate(),
-                        title: item.employee_name + " - " + item.leavename
-                    }))} />
+                        title: item.employee_name + " - " + item.leavename,
+                        team: item.team
+                    }))]} />
                 </div>
             </div>
 

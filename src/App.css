@@ -1,0 +1,14 @@
+.rbc-month-view .rbc-date-cell.holiday-slot::after {
+  content: attr(data-holiday);
+  display: block;
+  font-size: 10px;
+  text-align: center;
+  margin-top: 2px;
+  padding: 1px 3px;
+  border-radius: 4px;
+  background: #fde68a; /* yellow-300 */
+  color: #92400e;      /* yellow-900 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
