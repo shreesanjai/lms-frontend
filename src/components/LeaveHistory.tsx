@@ -47,8 +47,8 @@ const LeaveHistory = ({ year }: LeaveHistoryProps) => {
     }, [year]);
 
     return (
-        <div className="w-full overflow-x-auto">
-            <Table className="w-full border dark:border-neutral-800  rounded-lg shadow-md">
+        <div className="m-5 overflow-x-auto">
+            <Table className="border dark:border-neutral-800  rounded-lg shadow-md">
                 <TableHeader>
                     <TableRow className="dark:bg-neutral-900/70 bg-neutral-200/40 uppercase text-xs font-semibold dark:text-neutral-300">
                         <TableHead>
@@ -92,7 +92,6 @@ const LeaveHistory = ({ year }: LeaveHistoryProps) => {
                                     key={idx}
                                     className="dark:bg-neutral-950/40 hover:dark:bg-neutral-800/40 border-b dark:border-neutral-800 bg-neutral-100/40 hover:bg-neutral-200/40 border-neutral-200"
                                 >
-                                    {/* Leave Dates */}
                                     <TableCell className="py-3">
                                         <div className="font-semibold dark:text-white">{isSingleDay ? start : `${start} - ${end}`}</div>
                                         <div className="text-xs text-neutral-400">
@@ -100,7 +99,6 @@ const LeaveHistory = ({ year }: LeaveHistoryProps) => {
                                         </div>
                                     </TableCell>
 
-                                    {/* Leave Type */}
                                     <TableCell className="py-3">
                                         <div className="font-semibold dark:text-white">{item.leavename}</div>
                                         <div className="text-xs text-neutral-400">
@@ -113,7 +111,6 @@ const LeaveHistory = ({ year }: LeaveHistoryProps) => {
                                         </div>
                                     </TableCell>
 
-                                    {/* Status */}
                                     <TableCell className="py-3">
                                         <div className="font-semibold dark:text-white capitalize">{getStatus(item.status).split(" ")[0]}</div>
                                         <div className="text-xs text-neutral-400">
@@ -121,10 +118,8 @@ const LeaveHistory = ({ year }: LeaveHistoryProps) => {
                                         </div>
                                     </TableCell>
 
-                                    {/* Requested By */}
                                     <TableCell className="py-3 font-semibold ">{item.name}</TableCell>
 
-                                    {/* Action Taken On */}
                                     <TableCell className="py-3">
                                         <div className="font-semibold ">
                                             {item.statusupdate_at
@@ -135,10 +130,8 @@ const LeaveHistory = ({ year }: LeaveHistoryProps) => {
                                         </div>
                                     </TableCell>
 
-                                    {/* Leave Note */}
                                     <TableCell className="py-3 dark:text-neutral-300 text-neutral-400">{item.notes || "-"}</TableCell>
 
-                                    {/* Reject / Cancellation Reason */}
                                     <TableCell className="py-3 dark:text-neutral-400 text-neutral-500 italic">{item.reject_cancel_reason || "-"}</TableCell>
                                 </TableRow>
                             );

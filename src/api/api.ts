@@ -66,11 +66,11 @@ apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response) {
-            // Server responded with error status
+
             const message = error.response.data?.message || error.response.data?.error || `HTTP error! status: ${error.response.status}`;
             throw new Error(message);
         } else if (error.request) {
-            // Network error
+
             throw new Error('Network error - please check your connection');
         } else {
             throw new Error('Request failed');
@@ -183,4 +183,9 @@ export const getMyTeam = async () => {
 export const getMyTeamLeave = async (year: number | null) => {
     const response = await apiClient.get(`/user/team-summary?year=${year}`)
     return response.data;
+}
+
+export const getTeamLeaveCalendar = async (fromDate: string, toDate: string) => {
+    const response = await apiClient.get(`/user/teamleavecalendar?fromDate=${fromDate}&toDate=${toDate}`)
+    return response.data
 }

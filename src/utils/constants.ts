@@ -8,10 +8,18 @@ export const leave_status = {
     approved: "Approved",
 } as const;
 
-export type LeaveStatusKey = keyof typeof leave_status;   // "pending" | "partially_approved" | "cancelled" | "approved"
-export type LeaveStatusValue = (typeof leave_status)[LeaveStatusKey]; // "Pending" | "Approved By Reporting Manager" | "Cancelled" | "Approved"
+export type LeaveStatusKey = keyof typeof leave_status;
+export type LeaveStatusValue = (typeof leave_status)[LeaveStatusKey];
 
 export const getStatus = (data: LeaveStatusKey) => {
     return leave_status[data];
 }
 
+export const getInitials = (name: string) => {
+    return name
+        .split(' ')
+        .map(n => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2);
+};

@@ -1,9 +1,11 @@
 import { cancelRequest, myPendingRequests } from "@/api/api";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import LeaveHistory from "@/components/LeaveHistory";
 import LeaveRequest from "@/components/LeaveRequest";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { format } from "date-fns";
 import { useEffect, useState } from "react"
@@ -42,6 +44,8 @@ type ConfirmDialogState = (ConfirmDialogConfig & { open: boolean }) | null;
 const LeavePage = () => {
 
     const [leaveRequestOpen, setLeaveRequestOpen] = useState(false);
+    const years = Array.from({ length: 2 }, (_, i) => new Date().getFullYear() - 1 + i)
+    const [year, setYear] = useState(new Date().getFullYear());
 
     const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>(null);
 
@@ -115,7 +119,7 @@ const LeavePage = () => {
 
                 <h2 className="text-xl font-semibold">My Pending Requests</h2>
             </div>
-            <Card className="w-full">
+            <Card className="m-5">
                 <CardContent>
                     <ScrollArea className="h-[200px] pr-3">
 
@@ -184,23 +188,42 @@ const LeavePage = () => {
                 </CardContent>
             </Card>
 
-            {
-                leaveRequestOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto">
+            {leaveRequestOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto">
 
-                        <div
-                            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-                            onClick={() => setLeaveRequestOpen(false)}
-                        />
+                    <div
+                        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                        onClick={() => setLeaveRequestOpen(false)}
+                    />
 
-                        <div className="relative z-10 w-full max-w-lg">
-                            <LeaveRequest onClose={() => setLeaveRequestOpen(false)} refresh={getPendingRequests} />
-                        </div>
+                    <div className="relative z-10 w-full max-w-lg">
+                        <LeaveRequest onClose={() => setLeaveRequestOpen(false)} refresh={getPendingRequests} />
                     </div>
-                )
-            }
+                </div>
+            )}
 
-            {/* Confirmation Dialog */}
+            <div className='flex flex-col'>
+                <div className="flex flex-row justify-between">
+
+                    <h3 className='text-xl font-bold'>Leave History</h3>
+
+                    <Select value={String(year)} onValueChange={(value) => setYear(Number(value))}>
+                        <SelectTrigger className="w-48">
+                            <SelectValue placeholder="Pick a year" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {years.map((item) => (
+                                <SelectItem key={item} className="text-bold" value={String(item)}>
+                                    Jan {item} - Dec {item}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                </div>
+                <LeaveHistory year={year} />
+            </div>
+
             {confirmDialog && (
                 <ConfirmDialog
                     title={confirmDialog.title}

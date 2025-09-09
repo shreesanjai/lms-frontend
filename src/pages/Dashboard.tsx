@@ -1,6 +1,5 @@
 import { useAppSelector } from '@/store/hook';
 import LeaveSummary from '@/components/LeaveSummary';
-import LeaveHistory from '@/components/LeaveHistory';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useState } from 'react';
 
@@ -36,16 +35,8 @@ const Dashboard: React.FC = () => {
 
 
 
-      {/* Leave Summary */}
       <div className=''>
         <LeaveSummary year={year} />
-      </div>
-
-
-      {/* Leave History */}
-      <div className='flex flex-col gap-3'>
-        <h3 className='text-xl font-bold'>Leave History</h3>
-        <LeaveHistory year={year} />
       </div>
 
     </div>

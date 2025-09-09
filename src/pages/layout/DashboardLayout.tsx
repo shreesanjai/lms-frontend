@@ -1,4 +1,4 @@
-// pages/layout/DashboardLayout.tsx
+
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '@/components/SideBar';
@@ -15,10 +15,8 @@ const DashboardLayout: React.FC = () => {
     const [teamData, setTeamData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Memoize hasTeam calculation
     const hasTeam = useMemo(() => teamData.length > 0, [teamData.length]);
 
-    // Fetch team data with proper error handling
     const fetchTeamData = useCallback(async () => {
         try {
             setIsLoading(true);
@@ -45,7 +43,6 @@ const DashboardLayout: React.FC = () => {
         fetchTeamData();
     }, [fetchTeamData]);
 
-    // Simplified toggle functions - no need for useCallback with simple state setters
     const toggleSidebar = (open: boolean) => setSidebarOpen(open);
     const toggleAddUser = (open: boolean) => setAddUserOpen(open);
     const toggleUpdateUser = (open: boolean) => setUpdateUserOpen(open);

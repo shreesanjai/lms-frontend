@@ -1,11 +1,11 @@
 import React from "react";
-import { cn } from "@/lib/utils"; // shadcn helper for conditional classNames
+import { cn } from "@/lib/utils";
 
 interface LoadingSpinnerProps {
     message?: string;
     size?: "small" | "medium" | "large";
     fullScreen?: boolean;
-    color?: "blue" | "teal"; // added teal option
+    color?: "blue" | "teal";
 }
 
 const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({

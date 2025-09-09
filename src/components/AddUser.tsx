@@ -47,13 +47,12 @@ const AddUser = ({ onClose }: AppUserProps) => {
         hr_id: "",
     });
 
-    // Reporting Manager States
     const [managerInput, setManagerInput] = useState("");
     const [managerResults, setManagerResults] = useState<user[]>([]);
     const [isSearchingManager, setIsSearchingManager] = useState(false);
     const [showManagerDropdown, setShowManagerDropdown] = useState(false);
 
-    // HR States
+
     const [hrInput, setHrInput] = useState("");
     const [hrResults, setHrResults] = useState<user[]>([]);
     const [isSearchingHr, setIsSearchingHr] = useState(false);
@@ -71,7 +70,7 @@ const AddUser = ({ onClose }: AppUserProps) => {
         }
     };
 
-    // Debounced search for Manager
+
     const debouncedManagerSearch = useMemo(
         () =>
             debounce(async (searchTerm: string) => {
@@ -97,7 +96,7 @@ const AddUser = ({ onClose }: AppUserProps) => {
         []
     );
 
-    // Debounced search for HR (filtered by department = HR)
+
     const debouncedHrSearch = useMemo(
         () =>
             debounce(async (searchTerm: string) => {
@@ -111,7 +110,7 @@ const AddUser = ({ onClose }: AppUserProps) => {
                 setIsSearchingHr(true);
                 try {
                     const results = await searchUsers(searchTerm);
-                    const hrOnly = results.filter((user) => user.department === "HR"); // filter HR only
+                    const hrOnly = results.filter((user) => user.department === "HR");
                     setHrResults(hrOnly);
                     setShowHrDropdown(true);
                 } catch (error) {
@@ -161,31 +160,27 @@ const AddUser = ({ onClose }: AppUserProps) => {
             <h2 className="text-lg font-semibold mb-4">Add New User</h2>
 
             <form className="space-y-4" onSubmit={handleSubmit}>
-                {/* Name */}
+
                 <div>
                     <Label className="mb-2">Name</Label>
                     <Input type="text" placeholder="Enter name" onChange={(e) => onValueUpdate("name", e.target.value)} />
                 </div>
 
-                {/* Username */}
                 <div>
                     <Label className="mb-2">Username</Label>
                     <Input type="text" placeholder="Enter username" onChange={(e) => onValueUpdate("username", e.target.value)} />
                 </div>
 
-                {/* Password */}
                 <div>
                     <Label className="mb-2">Password</Label>
                     <Input type="password" placeholder="Enter password" onChange={(e) => onValueUpdate("password", e.target.value)} />
                 </div>
 
-                {/* Role */}
                 <div>
                     <Label className="mb-2">Role</Label>
                     <Input type="text" placeholder="Enter role" onChange={(e) => onValueUpdate("role", e.target.value)} />
                 </div>
 
-                {/* Department */}
                 <div>
                     <Label className="mb-2">Department</Label>
                     <Select onValueChange={(value) => onValueUpdate("department", value)} value={formData.department}>
@@ -204,7 +199,6 @@ const AddUser = ({ onClose }: AppUserProps) => {
                     </Select>
                 </div>
 
-                {/* Reporting Manager */}
                 <div className="manager-search-container relative">
                     <Label className="mb-2">Reporting Manager</Label>
                     <div className="relative">
@@ -248,7 +242,6 @@ const AddUser = ({ onClose }: AppUserProps) => {
                     )}
                 </div>
 
-                {/* HR Search */}
                 <div className="manager-search-container relative">
                     <Label className="mb-2">HR</Label>
                     <div className="relative">
@@ -292,7 +285,6 @@ const AddUser = ({ onClose }: AppUserProps) => {
                     )}
                 </div>
 
-                {/* Actions */}
                 <div className="flex justify-end gap-2">
                     <Button type="button" variant="ghost" onClick={onClose}>
                         Cancel

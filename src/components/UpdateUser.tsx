@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import debounce from "lodash.debounce";
 
 interface UpdateUserProps {
-    userId?: string; // Optional - can be provided or searched
+    userId?: string;
     onClose: () => void;
 }
 
@@ -55,13 +55,13 @@ const UpdateUser = ({ userId, onClose }: UpdateUserProps) => {
     const [isUserSearching, setIsUserSearching] = useState(false);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
 
-    // Manager search states
+
     const [managerInputValue, setManagerInputValue] = useState("");
     const [managerSearchResults, setManagerSearchResults] = useState<user[]>([]);
     const [isManagerSearching, setIsManagerSearching] = useState(false);
     const [showManagerDropdown, setShowManagerDropdown] = useState(false);
 
-    // HR search states
+
     const [hrInputValue, setHrInputValue] = useState("");
     const [hrSearchResults, setHrSearchResults] = useState<user[]>([]);
     const [isHrSearching, setIsHrSearching] = useState(false);
@@ -70,7 +70,7 @@ const UpdateUser = ({ userId, onClose }: UpdateUserProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [userDataLoaded, setUserDataLoaded] = useState(!!userId);
 
-    // Fetch user data when selectedUserId changes
+
     useEffect(() => {
         if (selectedUserId) {
             const fetchUserData = async () => {
@@ -89,7 +89,6 @@ const UpdateUser = ({ userId, onClose }: UpdateUserProps) => {
                         hr_id: userData.hr_id || "",
                     });
 
-                    // Fetch manager name
                     if (userData.reporting_manager_id) {
                         try {
                             const managerData = await getUserById(userData.reporting_manager_id);
@@ -101,7 +100,6 @@ const UpdateUser = ({ userId, onClose }: UpdateUserProps) => {
                         setManagerInputValue("");
                     }
 
-                    // Fetch HR name
                     if (userData.hr_id) {
                         try {
                             const hrData = await getUserById(userData.hr_id);
@@ -148,7 +146,6 @@ const UpdateUser = ({ userId, onClose }: UpdateUserProps) => {
         }
     };
 
-    // Debounced search for users
     const debouncedUserSearch = useMemo(
         () =>
             debounce(async (searchTerm: string) => {
@@ -173,7 +170,6 @@ const UpdateUser = ({ userId, onClose }: UpdateUserProps) => {
         []
     );
 
-    // Debounced search for managers
     const debouncedManagerSearch = useMemo(
         () =>
             debounce(async (searchTerm: string) => {
@@ -198,7 +194,6 @@ const UpdateUser = ({ userId, onClose }: UpdateUserProps) => {
         []
     );
 
-    // Debounced search for HR (HR only)
     const debouncedHrSearch = useMemo(
         () =>
             debounce(async (searchTerm: string) => {
@@ -273,7 +268,6 @@ const UpdateUser = ({ userId, onClose }: UpdateUserProps) => {
         <div className="border border-neutral-700 bg-white dark:bg-neutral-900 p-6 rounded-2xl">
             <h2 className="text-lg font-semibold mb-4">Update User</h2>
 
-            {/* User Search Section */}
             {!userId && (
                 <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <Label className="mb-2 font-medium">Search User to Update</Label>
@@ -321,7 +315,6 @@ const UpdateUser = ({ userId, onClose }: UpdateUserProps) => {
                 </div>
             )}
 
-            {/* Loading State */}
             {selectedUserId && isLoading && (
                 <div className="flex items-center justify-center h-64">
                     <div className="animate-spin h-8 w-8 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
@@ -329,7 +322,6 @@ const UpdateUser = ({ userId, onClose }: UpdateUserProps) => {
                 </div>
             )}
 
-            {/* Update Form */}
             {selectedUserId && userDataLoaded && !isLoading && (
                 <form className="space-y-4" onSubmit={handleSubmit}>
                     <div>
@@ -376,7 +368,6 @@ const UpdateUser = ({ userId, onClose }: UpdateUserProps) => {
                         </Select>
                     </div>
 
-                    {/* Reporting Manager */}
                     <div className="manager-search-container relative">
                         <Label className="mb-2">Reporting Manager</Label>
                         <div className="relative">
@@ -414,7 +405,6 @@ const UpdateUser = ({ userId, onClose }: UpdateUserProps) => {
                         )}
                     </div>
 
-                    {/* HR */}
                     <div className="manager-search-container relative">
                         <Label className="mb-2">HR</Label>
                         <div className="relative">

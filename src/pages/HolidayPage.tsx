@@ -175,7 +175,6 @@ const HolidayPage = () => {
     const validateDuplicates = (data: Holiday[]): Holiday[] => {
         const map = new Map<string, Holiday[]>();
 
-        // Group by date
         for (const holiday of data) {
             if (!holiday.date) continue;
             if (!map.has(holiday.date)) {
@@ -189,7 +188,6 @@ const HolidayPage = () => {
         for (const [, holidays] of map.entries()) {
             const first = holidays[0];
 
-            // âœ… require both description & floater to match
             const allSame = holidays.every(
                 (h) =>
                     h.description === first.description &&
@@ -197,10 +195,8 @@ const HolidayPage = () => {
             );
 
             if (allSame) {
-                // âœ… Keep only one copy
                 result.push({ ...first, hasError: false, err: "" });
             } else {
-                // âŒ Conflicting duplicates -> mark all
                 for (const h of holidays) {
                     result.push({
                         ...h,
@@ -301,7 +297,6 @@ const HolidayPage = () => {
         const sortedHolidays = sortArrayBasedOnDate([...currentHolidays, ...convertedData]);
         const validatedHolidays = validateDuplicates(sortedHolidays);
 
-        // Ensure there's always one empty row for new entries
         const hasEmptyRow = validatedHolidays.some(h => !h.date && !h.description.trim());
         if (!hasEmptyRow) {
             validatedHolidays.push({ ...initialHoliday, id: Date.now().toString() });
@@ -323,7 +318,6 @@ const HolidayPage = () => {
             return;
         }
 
-        // Only save new/modified non-past holidays
         const validHolidays = newHolidays.filter((h) =>
             h.date &&
             h.description.trim() &&
@@ -382,7 +376,6 @@ const HolidayPage = () => {
         }
     };
 
-    // Load holidays for view tab
     useEffect(() => {
         (async () => {
             const startDate = new Date(`January 01,${selectedYear}`).toISOString().split("T")[0];
@@ -393,7 +386,6 @@ const HolidayPage = () => {
         })();
     }, [selectedYear]);
 
-    // Load existing holidays when add holiday year changes
     useEffect(() => {
         loadExistingHolidaysForAddYear(addHolidayYear);
     }, [addHolidayYear, loadExistingHolidaysForAddYear]);

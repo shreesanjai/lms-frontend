@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Building2, Eye, EyeOff, Lock, User } from 'lucide-react';
 
-// Shadcn/ui components
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,7 +30,6 @@ const LoginPage = () => {
       <div className="relative z-10 w-full max-w-md">
         <Card className="bg-gray-900/40 backdrop-blur-xl border-gray-700/50 shadow-2xl">
           <CardHeader className="text-center space-y-4 pb-8">
-            {/* Logo/Icon */}
             <div className="flex justify-center">
               <div className="relative">
                 <div className="absolute inset-0 bg-teal-500/30 rounded-full blur-xl"></div>
@@ -41,7 +39,6 @@ const LoginPage = () => {
               </div>
             </div>
 
-            {/* Title */}
             <div>
               <CardTitle className="text-3xl font-bold text-white mb-2">
                 Login

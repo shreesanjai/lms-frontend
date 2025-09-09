@@ -16,12 +16,6 @@ interface LeaveRequestProps {
     refresh: () => void
 }
 
-// interface Response {
-//     workingDays: number
-//     weekends: number
-//     holidays: number
-//     totalDays: number
-// }
 
 interface PolicyType {
     id: string
@@ -60,7 +54,7 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
 
         const fetchWorkingDaysAndValidate = async () => {
             try {
-                // Validate date range
+
                 if (startDate > endDate) {
                     setErrors(prev => ({ ...prev, endDate: "End Date must be after Start Date" }));
                     return;
@@ -69,7 +63,6 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
                     setErrors(prev => ({ ...prev, endDate: "" }));
                 }
 
-                // Fetch working days
                 const resp = await getworkingDays(
                     startDate.toLocaleDateString("en-CA"),
                     endDate.toLocaleDateString("en-CA")
@@ -135,7 +128,7 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
             const selectedType = leaveType.find(item => item.id === String(policyId))
             const todayDate: Date = new Date();
 
-            // Fix: Only check availability if it's not null (not infinite)
+
             if (selectedType?.availability !== null && workingDays > Number(selectedType?.availability)) {
                 updated.policyId = `Only ${selectedType?.availability} days available`
             }
@@ -209,7 +202,6 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
             </div>
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                 <div className="flex flex-row gap-2">
-                    {/* Start Date */}
                     <div className="flex flex-col gap-1 w-full">
                         <Label className="text-xs font-semibold mb-1">Start Date</Label>
                         <Popover open={startOpen} onOpenChange={setStartOpen}>
@@ -235,7 +227,6 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
                         {errors.startDate && <p className="text-red-500 text-xs">{errors.startDate}</p>}
                     </div>
 
-                    {/* End Date */}
                     <div className="flex flex-col gap-1 w-full">
                         <Label className="text-xs font-semibold mb-1">End Date</Label>
                         <Popover open={endOpen} onOpenChange={setEndOpen}>
@@ -261,7 +252,6 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
                     </div>
                 </div>
 
-                {/* Leave Type */}
                 <div className="flex flex-col gap-1">
                     <div className="flex flex-row justify-between mb-1">
                         <Label className="text-xs font-semibold">Leave Type</Label>
@@ -293,7 +283,6 @@ const LeaveRequest = ({ onClose, refresh }: LeaveRequestProps) => {
                     {errors.policyId && <p className="text-red-500 text-xs">{errors.policyId}</p>}
                 </div>
 
-                {/* Notes */}
                 <div className="flex flex-col gap-1">
                     <Label className="text-xs font-semibold mb-1">Notes</Label>
                     <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="h-24" />

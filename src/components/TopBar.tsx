@@ -1,4 +1,3 @@
-// components/TopBar.tsx
 import React from 'react';
 import { Menu, LogOut, UserPlus, UserRoundPen } from 'lucide-react';
 import {
@@ -14,6 +13,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAppDispatch, useAppSelector } from '@/store/hook';
 import { logoutThunk } from '@/store/thunks/authThunks';
 import { ModeToggle } from '@/components/ui/mode-toggle';
+import { getInitials } from '@/utils/constants';
 
 interface TopBarProps {
     setSidebarOpen: (open: boolean) => void;
@@ -29,14 +29,6 @@ const TopBar: React.FC<TopBarProps> = ({ setSidebarOpen, setAddUserOpen, setUpda
         dispatch(logoutThunk());
     };
 
-    const getInitials = (name: string) => {
-        return name
-            .split(' ')
-            .map(n => n[0])
-            .join('')
-            .toUpperCase()
-            .slice(0, 2);
-    };
 
     return (
         <header className="border-b border-zinc-200 dark:border-zinc-800 h-16">
@@ -67,12 +59,19 @@ const TopBar: React.FC<TopBarProps> = ({ setSidebarOpen, setAddUserOpen, setUpda
                         <DropdownMenuContent className="w-56" align="end" forceMount>
                             <DropdownMenuLabel className="font-normal">
                                 <div className="flex flex-col space-y-1">
-                                    <p className="text-sm font-medium leading-none">
-                                        {user?.name || 'User'}
-                                    </p>
-                                    <p className="text-xs leading-none text-muted-foreground">
-                                        {user?.username}
-                                    </p>
+                                    <div className='flex justify-between'>
+                                        <p className="text-sm font-medium leading-none">
+                                            {user?.name || 'User'}
+                                        </p>
+                                        <span className='text-xs leading-none text-muted-foreground'>{user?.department}</span>
+                                    </div>
+                                    <div className='flex justify-between'>
+
+                                        <p className="text-xs leading-none text-muted-foreground">
+                                            {user?.username}
+                                        </p>
+                                        <span className='text-xs leading-none text-muted-foreground'>{user?.role}</span>
+                                    </div>
                                 </div>
                             </DropdownMenuLabel>
 

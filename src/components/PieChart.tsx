@@ -137,7 +137,6 @@ const ChartPie = ({ data }: ChartPieProps) => {
 
             <CardFooter className="border-t rounded-b-lg w-full">
                 <div className="flex gap-4 w-full py-2 justify-around">
-                    {/* Available Days */}
                     <div className="text-center p-3 rounded-lg">
                         <div className="text-xs font-medium text-muted-foreground mb-1">Available</div>
                         <div className="flex items-center justify-center">
@@ -149,7 +148,6 @@ const ChartPie = ({ data }: ChartPieProps) => {
                         </div>
                     </div>
 
-                    {/* Consumed Days */}
                     <div className="text-center p-3 rounded-lg">
                         <div className="text-xs font-medium text-muted-foreground mb-1">Consumed</div>
                         <div className="flex items-center justify-center">
@@ -157,7 +155,6 @@ const ChartPie = ({ data }: ChartPieProps) => {
                         </div>
                     </div>
 
-                    {/* Annual Quota */}
 
                     <div className="text-center p-3 rounded-lg">
                         <div className="text-xs font-medium text-muted-foreground mb-1">Annual Quota</div>

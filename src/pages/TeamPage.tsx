@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useCallback, useEffect, useState } from 'react';
-import { approveRequest, getMyPeerPendingRequests, getMyTeam, getMyTeamLeave, rejectRequest, type UserData } from '@/api/api';
+import { approveRequest, getAllHolidays, getMyPeerPendingRequests, getMyTeam, getMyTeamLeave, rejectRequest, type UserData } from '@/api/api';
 import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -15,6 +15,8 @@ import moment from 'moment';
 import { useAppSelector } from '@/store/hook';
 import { ChevronDown } from 'lucide-react';
 import { getStatus, type LeaveStatusKey } from '@/utils/constants';
+import TeamCalendarView from '@/components/TeamCalendarView';
+import type { Holiday } from './HolidayPage';
 
 type pendingApprovalRequests = {
     id: string,
@@ -38,10 +40,11 @@ type ConfirmDialogConfig = {
     onCancel: () => void;
 };
 
-type teamLeaveSummary = {
+export type teamLeaveSummary = {
     employee_name: string
     enddate: string
     leave_id: string
+    calendardaystatus: string
     leavename: string
     no_of_days: string
     startdate: string,
@@ -64,6 +67,7 @@ const TeamPage = () => {
 
     const [myTeam, setMyTeam] = useState<UserData[]>([]);
     const [myPeople, setMyPeople] = useState<UserData[]>([]);
+    const [holidays, setHolidays] = useState<Holiday[]>([]);
 
 
     const showConfirmDialog = (config: ConfirmDialogConfig) => {
@@ -124,6 +128,19 @@ const TeamPage = () => {
             toast.error(error);
         }
     }
+
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const resp = await getAllHolidays("", "")
+                setHolidays(Array.isArray(resp) ? resp : resp.data || [])
+            } catch (error) {
+                console.error("Failed to fetch holidays:", error)
+                setHolidays([])
+            }
+        })()
+    }, [])
 
 
     const fetchAllData = useCallback(async () => {
@@ -371,12 +388,33 @@ const TeamPage = () => {
             <div>
                 <h3 className='ml-6 font-bold text-2xl mb-4'>Leave Sheet</h3>
                 <div className='m-10 h-[100vh]'>
-                    <BigCalenderView events={[...teamLeaveSummary.map(item => ({
-                        start: moment(item.startdate).toDate(),
-                        end: moment(item.enddate).add(1, 'day').toDate(),
-                        title: item.employee_name + " - " + item.leavename,
-                        team: item.team
-                    }))]} />
+                    <BigCalenderView
+                        holidays={holidays}
+                        props={{
+                            events: teamLeaveSummary.map(item => ({
+                                start: moment(item.startdate).toDate(),
+                                end: moment(item.enddate).add(1, 'day').toDate(),
+                                title: item.employee_name + " - " + item.leavename,
+                                team: item.team
+                            }))
+                        }}
+                    />
+                </div>
+            </div>
+
+            {/* Team Calendar View */}
+            <div>
+                <h3 className='ml-6 font-bold text-2xl mb-4'>Team Calendar</h3>
+                <div className='m-10 max-h-screen min-h-96'>
+                    <TeamCalendarView
+                        team={myTeam}
+                        holidays={holidays}
+                        teamLeaveSummary={
+                            teamLeaveSummary
+                                .filter(item =>
+                                    !myPeople.map(item => item.name).includes(item.employee_name)
+                                )}
+                    />
                 </div>
             </div>
 
