@@ -47,7 +47,7 @@ function isPastDate(dateString: string | null): boolean {
     return date < today;
 }
 
-const HolidayPage = () => {
+const Holiday = () => {
     const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
     const [addHolidayYear, setAddHolidayYear] = useState<number>(new Date().getFullYear());
 
@@ -123,7 +123,12 @@ const HolidayPage = () => {
             return;
         }
 
-        setDeletedHoliday(prev => [...prev, holidayToDelete])
+        setDeletedHoliday(prev => {
+            if(holidayToDelete.date !== null)
+                return [...prev, holidayToDelete]
+            else
+                return prev;
+        })
 
         setNewHolidays((prev) => {
             const updated = prev.filter((_, i) => i !== index);
@@ -608,4 +613,4 @@ const HolidayPage = () => {
     );
 };
 
-export default HolidayPage;
+export default Holiday;

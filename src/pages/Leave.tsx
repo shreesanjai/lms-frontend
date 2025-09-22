@@ -41,7 +41,7 @@ type ConfirmDialogState = (ConfirmDialogConfig & { open: boolean }) | null;
 
 
 
-const LeavePage = () => {
+const Leave = () => {
 
     const [leaveRequestOpen, setLeaveRequestOpen] = useState(false);
     const years = Array.from({ length: 2 }, (_, i) => new Date().getFullYear() - 1 + i)
@@ -241,4 +241,4 @@ const LeavePage = () => {
     )
 }
 
-export default LeavePage
+export default Leave

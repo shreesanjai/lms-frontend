@@ -9,7 +9,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css"
 import { useState } from "react"
 import { useTheme } from "./ui/theme-provider"
 
-import type { Holiday } from "@/pages/HolidayPage"
+import type { Holiday } from "@/pages/Holiday"
 
 const localizer = momentLocalizer(moment)
 

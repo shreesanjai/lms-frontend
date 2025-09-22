@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Calendar, TreePalm, X, Users } from 'lucide-react';
+import { Home, Calendar, TreePalm, X, Users, BookOpenText } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import type { UserData } from '@/api/api';
+import { useAppSelector } from '@/store/hook';
 
 interface SidebarProps {
     sidebarOpen: boolean;
@@ -13,6 +14,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, hasTeam }) => {
     const location = useLocation();
+    const user = useAppSelector(state => state.auth.user)
 
     const sidebarItems = useMemo(() => {
         const baseItems = [
@@ -43,6 +45,14 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, hasTeam 
 
         return baseItems;
     }, [hasTeam]);
+
+    const adminSidebarItems = [
+        {
+            name: 'Policy',
+            href: '/policy',
+            icon: BookOpenText
+        }
+    ]
 
     const renderSidebarItem = (item: typeof sidebarItems[0]) => {
         const Icon = item.icon;
@@ -92,6 +102,8 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen, hasTeam 
             <nav className="mt-8 px-4">
                 <ul className="space-y-2">
                     {sidebarItems.map(renderSidebarItem)}
+
+                    {user?.department === "ADMIN" && adminSidebarItems.map(renderSidebarItem)}
                 </ul>
             </nav>
         </div>

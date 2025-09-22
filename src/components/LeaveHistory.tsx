@@ -90,7 +90,7 @@ const LeaveHistory = ({ year }: LeaveHistoryProps) => {
                             return (
                                 <TableRow
                                     key={idx}
-                                    className="dark:bg-neutral-950/40 hover:dark:bg-neutral-800/40 border-b dark:border-neutral-800 bg-neutral-100/40 hover:bg-neutral-200/40 border-neutral-200"
+                                    className="dark:bg-neutral-950/40 hover:dark:bg-neutral-800/40 border-b dark:border-neutral-800 bg-white hover:bg-neutral-200/20 border-neutral-200"
                                 >
                                     <TableCell className="py-3">
                                         <div className="font-semibold dark:text-white">{isSingleDay ? start : `${start} - ${end}`}</div>

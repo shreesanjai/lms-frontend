@@ -141,14 +141,26 @@ export const getMyPeerPendingRequests = async () => {
     return response.data
 }
 
+export const getLeaveOnDays = async(startDate: string, endDate:string) => {
+    const response = await apiClient.get(`/leave-requests/available?startDate=${startDate}&endDate=${endDate}`)
+    return response.data;
+}
+
+export const getBeforeAfterLater = async(startDate: string, endDate:string) => {
+    const response = await apiClient.get(`/leave-requests/continuity?startDate=${startDate}&endDate=${endDate}`)
+    return response.data;
+}
+
 export const approveRequest = async (id: string) => {
     const response = await apiClient.put(`/leave-requests/approve?id=${id}`)
     return response.data
 }
+
 export const rejectRequest = async (id: string, rejectNotes: string) => {
     const response = await apiClient.put(`/leave-requests/reject?id=${id}`, { data: rejectNotes })
     return response.data
 }
+
 export const cancelRequest = async (id: string) => {
     const response = await apiClient.put(`/leave-requests/cancel?id=${id}`)
     return response.data

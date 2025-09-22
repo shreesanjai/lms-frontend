@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 import { Button } from "./ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import type { UserData } from "@/api/api"
-import type { teamLeaveSummary } from "@/pages/TeamPage"
-import type { Holiday } from "@/pages/HolidayPage"
+import type { teamLeaveSummary } from "@/pages/Team"
+import type { Holiday } from "@/pages/Holiday"
 import { getInitials } from "@/utils/constants"
 
 
@@ -74,7 +74,6 @@ const TeamCalendarView = ({ team = [], teamLeaveSummary = [], holidays = [] }: T
 
     const isHoliday = (date: Date) => {
         const dateString = date.toLocaleDateString("en-CA").split('T')[0];
-        console.log(dateString);
 
         return holidays.some(holiday => holiday.date === dateString);
     };

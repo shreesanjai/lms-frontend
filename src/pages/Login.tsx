@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAppDispatch, useAppSelector } from '@/store/hook';
 import { loginThunk } from '@/store/thunks/authThunks';
 
-const LoginPage = () => {
+const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -127,4 +127,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;

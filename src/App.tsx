@@ -1,17 +1,16 @@
 import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { initializeAuthThunk } from './store/thunks/authThunks';
-
+import { Toaster } from './components/ui/sonner';
+import { useAppDispatch, useAppSelector } from './store/hook';
 
 import Dashboard from './pages/Dashboard';
-
-import { useAppDispatch, useAppSelector } from './store/hook';
-import LoginPage from './pages/LoginPage';
+import Login from './pages/Login';
 import DashboardLayout from './pages/layout/DashboardLayout';
-import LeavePage from './pages/LeavePage';
-import { Toaster } from './components/ui/sonner';
-import HolidayPage from './pages/HolidayPage';
-import TeamPage from './pages/TeamPage';
+import Leave from './pages/Leave';
+import Holiday from './pages/Holiday';
+import Team from './pages/Team';
+import Policy from './pages/Policy';
 
 
 const App = () => {
@@ -25,7 +24,7 @@ const App = () => {
   if (!isAuthenticated) {
     return (
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<Login />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     );
@@ -41,15 +40,19 @@ const App = () => {
         </Route>
 
         <Route path="/leave" element={<DashboardLayout />}>
-          <Route index element={<LeavePage />} />
+          <Route index element={<Leave />} />
         </Route>
 
         <Route path="/holiday" element={<DashboardLayout />}>
-          <Route index element={<HolidayPage />} />
+          <Route index element={<Holiday />} />
         </Route>
 
         <Route path="/team" element={<DashboardLayout />}>
-          <Route index element={<TeamPage />} />
+          <Route index element={<Team />} />
+        </Route>
+
+        <Route path="/policy" element={<DashboardLayout />}>
+          <Route index element={<Policy />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

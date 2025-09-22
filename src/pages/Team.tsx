@@ -16,7 +16,7 @@ import { useAppSelector } from '@/store/hook';
 import { ChevronDown } from 'lucide-react';
 import { getStatus, type LeaveStatusKey } from '@/utils/constants';
 import TeamCalendarView from '@/components/TeamCalendarView';
-import type { Holiday } from './HolidayPage';
+import type { Holiday } from './Holiday';
 
 type pendingApprovalRequests = {
     id: string,
@@ -53,7 +53,7 @@ export type teamLeaveSummary = {
 
 type ConfirmDialogState = (ConfirmDialogConfig & { open: boolean }) | null;
 
-const TeamPage = () => {
+const Team = () => {
 
     const department = useAppSelector(state => state.auth.user?.department)
 
@@ -434,4 +434,4 @@ const TeamPage = () => {
     )
 }
 
-export default TeamPage
+export default Team

@@ -25,7 +25,6 @@ const DashboardLayout: React.FC = () => {
                 setTeamData(res.hrData);
             else
                 setTeamData(res.data);
-            console.log(res);
 
         } catch (error) {
             console.error('Error fetching team data:', error);
@@ -34,10 +33,6 @@ const DashboardLayout: React.FC = () => {
             setIsLoading(false);
         }
     }, []);
-
-    useEffect(() => {
-        console.log(teamData);
-    }, [teamData])
 
     useEffect(() => {
         fetchTeamData();
